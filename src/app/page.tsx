@@ -26,20 +26,30 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const { searchQuery, selectedCategory, setSelectedCategory } = useCart();
 
-  useEffect(() => {
-    async function fetchProducts() {
-      try {
-        const res = await fetch("https://fakestoreapi.com/products");
-        const data = await res.json();
-        setProducts(data);
-      } catch (error) {
-        console.error("Failed to fetch products:", error);
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchProducts();
-  }, []);
+ useEffect(() => {
+   async function fetchProducts() {
+     try {
+       // Fallback to the hardcoded string if the .env is missing
+       const apiUrl =
+         process.env.NEXT_PUBLIC_API_URL || "https://fakestoreapi.com/products";
+
+       const res = await fetch(apiUrl);
+
+       if (!res.ok) {
+         throw new Error(`HTTP error! status: ${res.status}`);
+       }
+
+       const data = await res.json();
+       setProducts(data);
+     } catch (error) {
+       console.error("Failed to fetch products:", error);
+       // Optional: you could set an error state here to show a "Try Again" button
+     } finally {
+       setLoading(false);
+     }
+   }
+   fetchProducts();
+ }, []);
 
   // Filter Logic: Search + Category
   const filteredProducts = products.filter((product) => {
