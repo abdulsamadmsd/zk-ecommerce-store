@@ -9,6 +9,7 @@ interface CartContextType {
   updateQuantity: (productId: number, action: "plus" | "minus") => void;
   removeFromCart: (productId: number) => void;
   clearCart: () => void;
+  total: number; // Promised in interface
   cartCount: number;
   searchQuery: string;
   setSearchQuery: (query: string) => void;
@@ -40,7 +41,11 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
     localStorage.setItem("zk_cart", JSON.stringify(cart));
   }, [cart]);
 
+  // Calculations
   const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
+
+  // FIXED: Added the total calculation here
+  const total = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
   const addToCart = (product: Product) => {
     setCart((prevCart) => {
@@ -88,6 +93,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
         updateQuantity,
         removeFromCart,
         clearCart,
+        total, // FIXED: Now passing total into the provider
         cartCount,
         searchQuery,
         setSearchQuery,
