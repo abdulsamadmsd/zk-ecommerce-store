@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
 import { CartItem, Product } from "@/types";
 
 interface CartContextType {
@@ -10,9 +10,10 @@ interface CartContextType {
   removeFromCart: (productId: number) => void;
   clearCart: () => void;
   cartCount: number;
-  // Search State
   searchQuery: string;
   setSearchQuery: (query: string) => void;
+  selectedCategory: string;
+  setSelectedCategory: (category: string) => void;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -20,6 +21,24 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 export const CartProvider = ({ children }: { children: React.ReactNode }) => {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("all");
+
+  // Load cart from LocalStorage on mount
+  useEffect(() => {
+    const savedCart = localStorage.getItem("zk_cart");
+    if (savedCart) {
+      try {
+        setCart(JSON.parse(savedCart));
+      } catch (e) {
+        console.error("Failed to load cart", e);
+      }
+    }
+  }, []);
+
+  // Save cart to LocalStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem("zk_cart", JSON.stringify(cart));
+  }, [cart]);
 
   const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
 
@@ -56,7 +75,10 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
     setCart((prevCart) => prevCart.filter((item) => item.id !== productId));
   };
 
-  const clearCart = () => setCart([]);
+  const clearCart = () => {
+    setCart([]);
+    localStorage.removeItem("zk_cart");
+  };
 
   return (
     <CartContext.Provider
@@ -69,6 +91,8 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
         cartCount,
         searchQuery,
         setSearchQuery,
+        selectedCategory,
+        setSelectedCategory,
       }}
     >
       {children}
