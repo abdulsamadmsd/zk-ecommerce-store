@@ -4,7 +4,6 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
-import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import {
   Trash2,
@@ -17,9 +16,7 @@ import {
 
 export default function CartPage() {
   const router = useRouter();
-  // Added clearCart here if your context supports it, otherwise remove it
-  const { cart, updateQuantity, removeFromCart, cartCount, clearCart } =
-    useCart();
+  const { cart, updateQuantity, removeFromCart, cartCount } = useCart();
 
   const subtotal = cart.reduce(
     (acc, item) => acc + item.price * item.quantity,
@@ -28,31 +25,9 @@ export default function CartPage() {
   const shipping = 10;
   const total = subtotal + shipping;
 
-  // --- NEW HANDLE FUNCTION ---
+  // UPDATED: Now directs to the checkout form page
   const handleCheckout = () => {
-    // 1. Show the toast
-    toast.success("Order Placed Successfully!", {
-      duration: 4000,
-      style: {
-        borderRadius: "16px",
-        background: "#1e293b",
-        color: "#fff",
-        fontWeight: "bold",
-        border: "1px solid #3b82f6",
-      },
-      iconTheme: {
-        primary: "#10b981",
-        secondary: "#fff",
-      },
-    });
-
-    // 2. Clear the cart (Optional - if you have this function)
-    if (clearCart) clearCart();
-
-    // 3. Redirect to Home after 2 seconds
-    setTimeout(() => {
-      router.push("/");
-    }, 2000);
+    router.push("/checkout");
   };
 
   if (cart.length === 0) {
@@ -169,7 +144,6 @@ export default function CartPage() {
             </div>
           </div>
 
-          {/* CHANGED THIS SECTION: Removed Link and used onClick */}
           <button
             onClick={handleCheckout}
             className="w-full bg-blue-600 text-white py-5 rounded-2xl font-black mt-10 hover:bg-white hover:text-black transition-all active:scale-[0.98] cursor-pointer"
