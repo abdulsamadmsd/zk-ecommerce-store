@@ -4,6 +4,8 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 import {
   Trash2,
   Plus,
@@ -14,7 +16,10 @@ import {
 } from "lucide-react";
 
 export default function CartPage() {
-  const { cart, updateQuantity, removeFromCart, cartCount } = useCart();
+  const router = useRouter();
+  // Added clearCart here if your context supports it, otherwise remove it
+  const { cart, updateQuantity, removeFromCart, cartCount, clearCart } =
+    useCart();
 
   const subtotal = cart.reduce(
     (acc, item) => acc + item.price * item.quantity,
@@ -22,6 +27,33 @@ export default function CartPage() {
   );
   const shipping = 10;
   const total = subtotal + shipping;
+
+  // --- NEW HANDLE FUNCTION ---
+  const handleCheckout = () => {
+    // 1. Show the toast
+    toast.success("Order Placed Successfully!", {
+      duration: 4000,
+      style: {
+        borderRadius: "16px",
+        background: "#1e293b",
+        color: "#fff",
+        fontWeight: "bold",
+        border: "1px solid #3b82f6",
+      },
+      iconTheme: {
+        primary: "#10b981",
+        secondary: "#fff",
+      },
+    });
+
+    // 2. Clear the cart (Optional - if you have this function)
+    if (clearCart) clearCart();
+
+    // 3. Redirect to Home after 2 seconds
+    setTimeout(() => {
+      router.push("/");
+    }, 2000);
+  };
 
   if (cart.length === 0) {
     return (
@@ -79,7 +111,6 @@ export default function CartPage() {
                   className="object-contain"
                 />
               </div>
-
               <div className="mt-4 sm:mt-0 sm:ml-6 flex-1 text-center sm:text-left">
                 <h3 className="font-bold text-gray-900 text-lg line-clamp-1">
                   {item.title}
@@ -91,7 +122,6 @@ export default function CartPage() {
                   ${item.price}
                 </p>
               </div>
-
               <div className="flex items-center mt-4 sm:mt-0 space-x-6">
                 <div className="flex items-center border border-gray-100 rounded-xl bg-gray-50 p-1">
                   <button
@@ -121,9 +151,9 @@ export default function CartPage() {
           ))}
         </div>
 
+        {/* --- SUMMARY SECTION --- */}
         <div className="bg-gray-900 text-white p-8 rounded-[32px] h-fit sticky top-28 shadow-2xl shadow-blue-900/20">
           <h2 className="text-xl font-bold mb-8">Summary</h2>
-
           <div className="space-y-5">
             <div className="flex justify-between text-gray-400 font-medium">
               <span>Subtotal</span>
@@ -139,11 +169,13 @@ export default function CartPage() {
             </div>
           </div>
 
-          <Link href="/checkout" className="block w-full">
-            <button className="w-full bg-blue-600 text-white py-5 rounded-2xl font-black mt-10 hover:bg-white hover:text-black transition-all active:scale-[0.98]">
-              Checkout Now
-            </button>
-          </Link>
+          {/* CHANGED THIS SECTION: Removed Link and used onClick */}
+          <button
+            onClick={handleCheckout}
+            className="w-full bg-blue-600 text-white py-5 rounded-2xl font-black mt-10 hover:bg-white hover:text-black transition-all active:scale-[0.98] cursor-pointer"
+          >
+            Checkout Now
+          </button>
 
           <div className="flex items-center justify-center mt-6 text-gray-500 text-xs font-bold space-x-2">
             <ShieldCheck size={14} />
