@@ -1,4 +1,3 @@
-
 export interface Product {
   id: number;
   title: string;
@@ -6,6 +5,8 @@ export interface Product {
   description: string;
   category: string;
   thumbnail: string;
+  rating: number; 
+  stock: number; 
 }
 
 export interface CartItem extends Product {

@@ -17,7 +17,7 @@ import { useTheme } from "next-themes";
 export default function CheckoutPage() {
   const router = useRouter();
   const { theme } = useTheme();
-  const { clearCart, cartItems, total } = useCart();
+  const { clearCart, cart, total } = useCart();;
 
   const [formData, setFormData] = useState({
     firstName: "",
