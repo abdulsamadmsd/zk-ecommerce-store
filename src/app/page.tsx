@@ -34,9 +34,8 @@ export default function Home() {
     async function fetchProducts() {
       try {
         setLoading(true);
-        const apiUrl =
-          process.env.NEXT_PUBLIC_API_URL ||
-          "https://dummyjson.com/products?limit=0";
+        // Using limit=0 to get all products so we can filter them locally efficiently
+        const apiUrl = "https://dummyjson.com/products?limit=0";
 
         const res = await fetch(apiUrl);
         if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
@@ -53,16 +52,21 @@ export default function Home() {
     fetchProducts();
   }, []);
 
+  // UPDATED FILTER LOGIC
   const getFilteredProducts = () => {
     if (!Array.isArray(products)) return [];
 
+    // 1. First, filter by Search Query
     let result = products.filter((p) =>
       p.title.toLowerCase().includes(searchQuery.toLowerCase()),
     );
 
+    // 2. Apply Category Logic
     if (selectedCategory === "all") {
-      return result.slice(0, 20);
+      // If searching, show all matches. If not, show only top 20.
+      return searchQuery ? result : result.slice(0, 20);
     } else {
+      // Show ALL products that match the selected category
       return result.filter((p) => p.category === selectedCategory);
     }
   };
@@ -85,7 +89,7 @@ export default function Home() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Hero Section */}
         <div className="mb-12">
-          <h1 className="text-5xl font-black text-gray-900 dark:text-white mb-4 tracking-tight">
+          <h1 className="text-5xl font-black text-gray-900 dark:text-white mb-4 tracking-tight capitalize">
             {searchQuery
               ? `Results for "${searchQuery}"`
               : selectedCategory === "all"
@@ -94,8 +98,8 @@ export default function Home() {
           </h1>
           <p className="text-gray-500 dark:text-slate-400 text-lg max-w-2xl">
             {selectedCategory === "all"
-              ? "Showing our top picks. Select a category to explore more specific items."
-              : `Exploring our full range of ${selectedCategory.replace("-", " ")}.`}
+              ? "Showing our top picks. Select a category to explore our full catalog."
+              : `Showing all items in ${selectedCategory.replace("-", " ")}.`}
           </p>
         </div>
 
