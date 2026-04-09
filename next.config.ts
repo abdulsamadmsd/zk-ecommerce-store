@@ -13,6 +13,20 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  // Added headers to fix Firefox and Chrome Popup login issues
+  async headers() {
+    return [
+      {
+        source: "/(.*)",
+        headers: [
+          {
+            key: "Cross-Origin-Opener-Policy",
+            value: "same-origin-allow-popups",
+          },
+        ],
+      },
+    ];
+  },
 };
 
 export default nextConfig;
