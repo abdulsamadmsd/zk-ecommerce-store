@@ -4,8 +4,8 @@ import { useEffect, useState } from "react";
 import ProductCard from "@/components/ProductCard";
 import { Product } from "@/types";
 import { useCart } from "@/context/CartContext";
+import { HomeSkeleton } from "@/components/Skeleton"; // Import from new file
 import {
-  Loader2,
   PackageSearch,
   LayoutGrid,
   Smartphone,
@@ -34,12 +34,9 @@ export default function Home() {
     async function fetchProducts() {
       try {
         setLoading(true);
-        // Using limit=0 to get all products so we can filter them locally efficiently
         const apiUrl = "https://dummyjson.com/products?limit=0";
-
         const res = await fetch(apiUrl);
         if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-
         const data = await res.json();
         setProducts(data.products || []);
       } catch (error) {
@@ -52,21 +49,15 @@ export default function Home() {
     fetchProducts();
   }, []);
 
-  // UPDATED FILTER LOGIC
   const getFilteredProducts = () => {
     if (!Array.isArray(products)) return [];
-
-    // 1. First, filter by Search Query
     let result = products.filter((p) =>
       p.title.toLowerCase().includes(searchQuery.toLowerCase()),
     );
 
-    // 2. Apply Category Logic
     if (selectedCategory === "all") {
-      // If searching, show all matches. If not, show only top 20.
       return searchQuery ? result : result.slice(0, 20);
     } else {
-      // Show ALL products that match the selected category
       return result.filter((p) => p.category === selectedCategory);
     }
   };
@@ -75,11 +66,8 @@ export default function Home() {
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] bg-white dark:bg-slate-950 transition-colors duration-500">
-        <Loader2 className="animate-spin text-blue-600 mb-4" size={40} />
-        <p className="text-gray-500 dark:text-slate-400 font-medium">
-          Curating your collection...
-        </p>
+      <div className="min-h-screen bg-white dark:bg-slate-950 transition-colors duration-500">
+        <HomeSkeleton />
       </div>
     );
   }
@@ -87,7 +75,6 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-white dark:bg-slate-950 transition-colors duration-500">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Hero Section */}
         <div className="mb-12">
           <h1 className="text-5xl font-black text-gray-900 dark:text-white mb-4 tracking-tight capitalize">
             {searchQuery
@@ -103,7 +90,6 @@ export default function Home() {
           </p>
         </div>
 
-        {/* Category Tabs */}
         <div className="flex flex-wrap gap-3 mb-10">
           {CATEGORIES.map((cat) => {
             const Icon = cat.icon;
@@ -125,7 +111,6 @@ export default function Home() {
           })}
         </div>
 
-        {/* Product Grid */}
         {filteredProducts.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {filteredProducts.map((product) => (
