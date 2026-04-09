@@ -1,5 +1,9 @@
 import { initializeApp, getApps, getApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
+import { 
+  getAuth, 
+  setPersistence, 
+  browserLocalPersistence 
+} from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
@@ -11,8 +15,18 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
-// Initialize Firebase (prevents duplicate initialization)
+// Initialize Firebase (prevents duplicate initialization in Next.js)
 const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
 
+// Initialize Services
 export const auth = getAuth(app);
 export const db = getFirestore(app);
+
+// --- THE FIX FOR MULTI-TAB & PERSISTENT LOGIN ---
+// This ensures the user stays logged in even after closing the browser or opening new tabs.
+if (typeof window !== "undefined") {
+  setPersistence(auth, browserLocalPersistence)
+    .catch((error) => {
+      console.error("Firebase Persistence Error:", error);
+    });
+}
