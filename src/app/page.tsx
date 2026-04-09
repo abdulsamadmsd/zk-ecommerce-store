@@ -12,16 +12,18 @@ import {
   Sparkles,
   Shirt,
   ShoppingBag,
+  Home as HomeIcon,
 } from "lucide-react";
 
-// [UPDATE] Categories updated to match DummyJSON slugs
+// [UPDATE] Categories updated to match DummyJSON slugs perfectly
 const CATEGORIES = [
   { id: "all", name: "All Products", icon: LayoutGrid },
   { id: "smartphones", name: "Phones", icon: Smartphone },
   { id: "laptops", name: "Laptops", icon: ShoppingBag },
-  { id: "fragrances", name: "Fragrance", icon: Sparkles },
   { id: "mens-shirts", name: "Men's", icon: Shirt },
   { id: "womens-dresses", name: "Women's", icon: Shirt },
+  { id: "beauty", name: "Beauty", icon: Sparkles },
+  { id: "furniture", name: "Home", icon: HomeIcon },
 ];
 
 export default function Home() {
@@ -33,9 +35,12 @@ export default function Home() {
     async function fetchProducts() {
       try {
         setLoading(true);
-        // [UPDATE] Fallback URL updated to DummyJSON
+
+        // [CRITICAL FIX] Added ?limit=0 to fetch all 100 products
+        // This ensures categories like 'smartphones' and 'mens-shirts' aren't empty
         const apiUrl =
-          process.env.NEXT_PUBLIC_API_URL || "https://dummyjson.com/products";
+          process.env.NEXT_PUBLIC_API_URL ||
+          "https://dummyjson.com/products?limit=0";
 
         const res = await fetch(apiUrl);
 
@@ -45,8 +50,7 @@ export default function Home() {
 
         const data = await res.json();
 
-        // [UPDATE] DummyJSON returns { products: [...] }, so we use data.products
-        // If data.products doesn't exist, we fallback to data (for FakeStoreAPI compatibility)
+        // DummyJSON returns { products: [...] }
         const productsArray = Array.isArray(data) ? data : data.products;
         setProducts(productsArray || []);
       } catch (error) {
@@ -60,7 +64,6 @@ export default function Home() {
   }, []);
 
   // Filter Logic: Search + Category
-  // [FIX] Added a check to ensure products is an array before filtering
   const filteredProducts = Array.isArray(products)
     ? products.filter((product) => {
         const matchesSearch = product.title
