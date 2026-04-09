@@ -9,16 +9,19 @@ import {
   PackageSearch,
   LayoutGrid,
   Smartphone,
-  Gem,
+  Sparkles,
   Shirt,
+  ShoppingBag,
 } from "lucide-react";
 
+// [UPDATE] Categories updated to match DummyJSON slugs
 const CATEGORIES = [
   { id: "all", name: "All Products", icon: LayoutGrid },
-  { id: "electronics", name: "Electronics", icon: Smartphone },
-  { id: "jewelery", name: "Jewelry", icon: Gem },
-  { id: "men's clothing", name: "Men's", icon: Shirt },
-  { id: "women's clothing", name: "Women's", icon: Shirt },
+  { id: "smartphones", name: "Phones", icon: Smartphone },
+  { id: "laptops", name: "Laptops", icon: ShoppingBag },
+  { id: "fragrances", name: "Fragrance", icon: Sparkles },
+  { id: "mens-shirts", name: "Men's", icon: Shirt },
+  { id: "womens-dresses", name: "Women's", icon: Shirt },
 ];
 
 export default function Home() {
@@ -26,48 +29,54 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const { searchQuery, selectedCategory, setSelectedCategory } = useCart();
 
- useEffect(() => {
-   async function fetchProducts() {
-     try {
-       // Fallback to the hardcoded string if the .env is missing
-       const apiUrl =
-         process.env.NEXT_PUBLIC_API_URL || "https://fakestoreapi.com/products";
+  useEffect(() => {
+    async function fetchProducts() {
+      try {
+        setLoading(true);
+        // [UPDATE] Fallback URL updated to DummyJSON
+        const apiUrl =
+          process.env.NEXT_PUBLIC_API_URL || "https://dummyjson.com/products";
 
-       const res = await fetch(apiUrl);
+        const res = await fetch(apiUrl);
 
-       if (!res.ok) {
-         throw new Error(`HTTP error! status: ${res.status}`);
-       }
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
 
-       const data = await res.json();
-       setProducts(data);
-     } catch (error) {
-       console.error("Failed to fetch products:", error);
-       // Optional: you could set an error state here to show a "Try Again" button
-     } finally {
-       setLoading(false);
-     }
-   }
-   fetchProducts();
- }, []);
+        const data = await res.json();
+
+        // [UPDATE] DummyJSON returns { products: [...] }, so we use data.products
+        // If data.products doesn't exist, we fallback to data (for FakeStoreAPI compatibility)
+        const productsArray = Array.isArray(data) ? data : data.products;
+        setProducts(productsArray || []);
+      } catch (error) {
+        console.error("Failed to fetch products:", error);
+        setProducts([]);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchProducts();
+  }, []);
 
   // Filter Logic: Search + Category
-  const filteredProducts = products.filter((product) => {
-    const matchesSearch = product.title
-      .toLowerCase()
-      .includes(searchQuery.toLowerCase());
-    const matchesCategory =
-      selectedCategory === "all" || product.category === selectedCategory;
-    return matchesSearch && matchesCategory;
-  });
+  // [FIX] Added a check to ensure products is an array before filtering
+  const filteredProducts = Array.isArray(products)
+    ? products.filter((product) => {
+        const matchesSearch = product.title
+          .toLowerCase()
+          .includes(searchQuery.toLowerCase());
+        const matchesCategory =
+          selectedCategory === "all" || product.category === selectedCategory;
+        return matchesSearch && matchesCategory;
+      })
+    : [];
 
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh]">
         <Loader2 className="animate-spin text-blue-600 mb-4" size={40} />
-        <p className="text-gray-500 font-medium font-inter">
-          Curating your collection...
-        </p>
+        <p className="text-gray-500 font-medium">Curating your collection...</p>
       </div>
     );
   }

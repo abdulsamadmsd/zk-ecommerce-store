@@ -80,7 +80,7 @@ export default function CartPage() {
             >
               <div className="relative w-28 h-28 flex-shrink-0 bg-gray-50 rounded-2xl p-3">
                 <Image
-                  src={item.image}
+                  src={item.thumbnail}
                   alt={item.title}
                   fill
                   className="object-contain"

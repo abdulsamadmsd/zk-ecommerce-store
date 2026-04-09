@@ -37,7 +37,7 @@ export default function ProductCard({ product }: ProductCardProps) {
     <div className="group bg-white rounded-[32px] p-5 border border-gray-100 hover:border-blue-600/20 hover:shadow-2xl transition-all duration-500 flex flex-col h-full">
       <div className="relative aspect-square w-full mb-6 bg-gray-50 rounded-[24px] overflow-hidden p-8">
         <Image
-          src={product.image}
+          src={product.thumbnail}
           alt={product.title}
           fill
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
