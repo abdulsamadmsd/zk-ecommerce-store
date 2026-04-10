@@ -158,8 +158,17 @@ export default function ProfilePage() {
           {/* Right Column: Menu Options */}
           <div className="lg:col-span-2 space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <button className="flex items-center p-5 rounded-2xl bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 hover:border-blue-600 dark:hover:border-blue-500 hover:shadow-md transition-all group text-left">
-                <div className="p-3 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 group-hover:bg-blue-600 dark:group-hover:bg-blue-600 group-hover:text-white transition-all">
+              <button
+                className="flex items-center p-5 rounded-2xl
+               bg-white dark:bg-slate-900 border border-gray-100
+                dark:border-slate-800 hover:border-blue-600 dark:hover:border-blue-500
+                 hover:shadow-md transition-all group text-left"
+              >
+                <div
+                  className="p-3 bg-blue-50 dark:bg-blue-900/20
+                 text-blue-600 dark:text-blue-400 group-hover:bg-blue-600
+                  dark:group-hover:bg-blue-600 group-hover:text-white transition-all"
+                >
                   <Package size={22} />
                 </div>
                 <div className="ml-4">
