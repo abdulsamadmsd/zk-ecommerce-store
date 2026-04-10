@@ -46,10 +46,13 @@ export default function Home() {
         const querySnapshot = await getDocs(collection(db, "products"));
 
         // Map the firestore documents to your Product type
-        const data = querySnapshot.docs.map((doc) => ({
-          ...doc.data(),
-          id: doc.id, // Use the Auto-ID from Firestore as the unique key
-        })) as Product[];
+        // Map the firestore documents to your Product type
+        const data = querySnapshot.docs.map((doc) => {
+          return {
+            id: doc.id,
+            ...doc.data(),
+          } as unknown as Product;
+        }) as Product[];
 
         setProducts(data);
       } catch (error) {
