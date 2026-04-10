@@ -39,7 +39,7 @@ export default function ProductCard({ product }: ProductCardProps) {
          dark:bg-slate-800/50 rounded-2xl overflow-hidden m-0"
         >
           <Image
-            src={product.thumbnail}
+            src={product.thumbnail!}
             alt={product.title}
             fill
             sizes="(max-width: 768px) 100vw, 33vw"

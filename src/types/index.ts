@@ -4,9 +4,11 @@ export interface Product {
   price: number;
   description: string;
   category: string;
-  thumbnail: string;
-  rating: number; 
-  stock: number; 
+  rating: number;
+  stock: number;
+ 
+  thumbnail?: string; // Add this
+  
 }
 
 export interface CartItem extends Product {

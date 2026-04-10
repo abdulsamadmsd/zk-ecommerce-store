@@ -89,11 +89,16 @@ export default function ProductDetail() {
           {/* Image Section */}
           <div className="relative aspect-square rounded-[40px] overflow-hidden bg-gray-50 dark:bg-slate-900 border border-gray-100 dark:border-slate-800 p-8 shadow-sm">
             <Image
-              src={product.thumbnail}
-              alt={product.title}
+              src={
+                (product as any).image ||
+                (product as any).thumbnail ||
+                ((product as any).images && (product as any).images[0]) ||
+                "/placeholder.png"
+              }
+              alt={product.title || "Product"}
               fill
-              className="object-contain hover:scale-105 transition-transform duration-700 p-8"
-              priority
+              priority // Good for SEO/Performance on detail pages
+              className="object-contain"
             />
           </div>
 
