@@ -11,13 +11,7 @@ import {
   User,
 } from "firebase/auth";
 import { doc, setDoc, serverTimestamp } from "firebase/firestore";
-import {
-  User as UserIcon,
-  Package,
-  Settings,
-  LogOut,
-  ChevronDown,
-} from "lucide-react";
+import UserMenu from "./UserMenu";
 
 export default function AuthButton() {
   const [user, setUser] = useState<User | null>(null);
@@ -108,63 +102,7 @@ export default function AuthButton() {
           </div>
 
           {/* --- HIGH LEVEL DROPDOWN (Now state-controlled) --- */}
-          <div
-            onClick={(e) => e.stopPropagation()} // Prevents closing when clicking inside
-            className={`absolute top-full right-0 mt-3 w-60 bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 shadow-2xl rounded-2xl py-2 z-50 transition-all duration-300 ease-out
-              ${isOpen ? "opacity-100 visible translate-y-0" : "opacity-0 invisible translate-y-2"}
-            `}
-          >
-            <div className="px-4 py-3 border-b border-gray-50 dark:border-slate-800 bg-gray-50/50 dark:bg-slate-800/50 rounded-t-2xl">
-              <p className="text-[10px] font-bold text-blue-600 uppercase tracking-tight">
-                Signed in as
-              </p>
-              <p className="text-xs font-medium text-gray-900 dark:text-gray-200 truncate">
-                {user.email}
-              </p>
-            </div>
-
-            <div className="p-1">
-              <Link
-                href="/profile"
-                onClick={() => setIsOpen(false)} // Close on navigation
-                className="flex items-center gap-2 w-full text-left px-3 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 rounded-lg transition-colors"
-              >
-                <UserIcon size={16} />
-                My Profile
-              </Link>
-
-              <Link
-                href="/orders"
-                onClick={() => setIsOpen(false)}
-                className="flex items-center gap-2 w-full text-left px-3 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 rounded-lg transition-colors"
-              >
-                <Package size={16} />
-                My Orders
-              </Link>
-
-              <Link
-                href="/settings"
-                onClick={() => setIsOpen(false)}
-                className="flex items-center gap-2 w-full text-left px-3 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 rounded-lg transition-colors"
-              >
-                <Settings size={16} />
-                Account Settings
-              </Link>
-            </div>
-
-            <div className="p-1 border-t border-gray-50 dark:border-slate-800">
-              <button
-                onClick={() => {
-                  handleLogout();
-                  setIsOpen(false);
-                }}
-                className="flex items-center gap-2 w-full text-left px-3 py-2.5 text-sm text-red-600 font-bold hover:bg-red-50 dark:hover:bg-red-900/10 rounded-lg transition-colors"
-              >
-                <LogOut size={16} />
-                Sign Out
-              </button>
-            </div>
-          </div>
+          <UserMenu isOpen={isOpen} user={user} onLogout={handleLogout} onClose={() => setIsOpen(false)} />
         </div>
       ) : (
         <button

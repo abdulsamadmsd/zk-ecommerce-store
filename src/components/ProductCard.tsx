@@ -4,24 +4,14 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Product } from "@/types";
-import { useCart } from "@/context/CartContext";
-import { ShoppingCart, Star } from "lucide-react";
-import toast from "react-hot-toast";
+import { Star } from "lucide-react";
+import AddToCartButton from "./AddToCartButton";
 
 interface ProductCardProps {
   product: Product;
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
-  const { addToCart } = useCart();
-
-  const handleAddToCart = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    addToCart(product);
-    toast.success(`${product.title.substring(0, 15)}... added!`);
-  };
-
   return (
     <div
       className="group bg-white  dark:bg-slate-900 rounded-[2rem] 
@@ -79,12 +69,10 @@ export default function ProductCard({ product }: ProductCardProps) {
               </p>
             </div>
 
-            <button
-              onClick={handleAddToCart}
+            <AddToCartButton 
+              product={product} 
               className="bg-slate-900 dark:bg-white text-white dark:text-slate-900 p-3.5 rounded-2xl hover:bg-blue-600 dark:hover:bg-blue-500 dark:hover:text-white transition-all shadow-md active:scale-95"
-            >
-              <ShoppingCart size={18} />
-            </button>
+            />
           </div>
         </div>
       </Link>
