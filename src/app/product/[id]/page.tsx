@@ -1,18 +1,34 @@
 import React, { Suspense } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { notFound } from "next/navigation";
+import { Metadata } from "next";
 import { ArrowLeft, Star, ShieldCheck, Truck, RotateCcw } from "lucide-react";
 import { Product } from "@/types";
 import { ProductDetailSkeleton } from "@/components/Skeleton";
 import AddToCartButton from "@/components/AddToCartButton";
 import PageTransition from "@/components/PageTransition";
 
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const { id } = await params;
+  const product = await getProduct(id).catch(() => null);
+  
+  return {
+    title: product ? `${product.title} | ZK STORE` : "Product Not Found",
+    description: product?.description || "View details of our premium hardware products.",
+  };
+}
+
 async function getProduct(id: string): Promise<Product> {
-  const res = await fetch(`https://dummyjson.com/products/${id}`, {
-    next: { revalidate: 3600 }, // Cache for 1 hour
-  });
-  if (!res.ok) throw new Error("Failed to fetch product");
-  return res.json();
+  try {
+    const res = await fetch(`https://dummyjson.com/products/${id}`, {
+      next: { revalidate: 3600 },
+    });
+    if (!res.ok) return null as any;
+    return res.json();
+  } catch (error) {
+    return null as any;
+  }
 }
 
 export default async function ProductPage({ params }: { params: Promise<{ id: string }> }) {
@@ -36,6 +52,8 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
 
 async function ProductDetailContent({ id }: { id: string }) {
   const product = await getProduct(id);
+
+  if (!product) return notFound();
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
@@ -62,7 +80,7 @@ async function ProductDetailContent({ id }: { id: string }) {
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-1 bg-yellow-400/10 px-3 py-1 rounded-full">
               <Star size={14} className="fill-yellow-400 text-yellow-400" />
-              <span className="text-sm font-bold text-yellow-700 dark:text-yellow-400">4.5</span>
+              <span className="text-sm font-bold text-yellow-700 dark:text-yellow-400">{product.rating}</span>
             </div>
             <span className="text-sm text-slate-400 font-medium">120+ Reviews</span>
           </div>

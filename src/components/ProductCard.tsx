@@ -19,11 +19,9 @@ export default function ProductCard({ product }: ProductCardProps) {
      dark:border-slate-800 hover:shadow-[0_20px_50px_rgba(0,0,0,0.04)]
       transition-all duration-500 flex flex-col h-full overflow-hidden"
     >
-      <Link
-        href={`/product/${product.id}`}
-        className="flex flex-col h-Full"
-      >
+      <div className="relative flex flex-col h-full">
         {/* IMAGE CONTAINER WITH ROUNDED CORNERS - NO PADDING ON CONTAINER */}
+        <Link href={`/product/${product.id}`} className="block">
         <div
           className="relative aspect-square w-full bg-[#f8f8f8]
          dark:bg-slate-800/50 rounded-2xl overflow-hidden m-0"
@@ -45,7 +43,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             </p>
             <div className="flex items-center gap-1">
               <Star size={10} className="fill-yellow-400 text-yellow-400" />
-              <span className="text-xs font-bold text-slate-400">4.5</span>
+              <span className="text-xs font-bold text-slate-400">{product.rating || '4.5'}</span>
             </div>
           </div>
 
@@ -75,7 +73,8 @@ export default function ProductCard({ product }: ProductCardProps) {
             />
           </div>
         </div>
-      </Link>
+        </Link>
+      </div>
     </div>
   );
 }

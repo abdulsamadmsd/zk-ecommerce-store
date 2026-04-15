@@ -13,16 +13,22 @@ export default function Navbar() {
   return (
     <nav
       className="sticky top-0 z-50 w-full border-b border-gray-100/80
-     dark:border-slate-800/50 bg-white/80 dark:bg-slate-950/80 backdrop-blur-md 
+     dark:border-slate-800/50 bg-white/80 dark:bg-slate-950/80 
+     backdrop-blur-md 
      transition-all duration-300"
     >
-      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-3 sm:px-3 lg:px-8">
         <div className="flex justify-between items-center h-20">
           {/* 1. BRAND LOGO */}
-          <div className="flex items-center shrink-0">
-            <Link href="/" className="flex items-center gap-2 sm:gap-3 group">
+          <div className="flex items-center shrink-1">
+            <Link href="/" className="flex items-center gap-3 sm:gap-4 group">
               <div
-                className="relative flex items-center justify-center bg-gradient-to-br from-blue-600 to-indigo-700 p-1.5 sm:p-2 rounded-xl group-hover:shadow-lg group-hover:shadow-blue-500/30 transition-all duration-300 group-hover:-rotate-2">
+                className="relative flex items-center justify-center
+                 bg-gradient-to-br from-blue-600 to-indigo-700 p-1.5
+                  sm:p-2 rounded-xl group-hover:shadow-lg
+                   group-hover:shadow-blue-500/30 transition-all duration-300
+                    group-hover:-rotate-2"
+              >
                 <Logo />
               </div>
             </Link>
