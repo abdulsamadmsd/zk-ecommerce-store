@@ -20,6 +20,8 @@ import { Order, OrderStatus } from "@/types";
 
 const STATUS_COPY: Record<OrderStatus, string> = {
   pending: "Your order has been created and is waiting for confirmation.",
+  approved: "Your order has been approved and is ready for fulfillment.",
+  rejected: "This order was rejected by the store admin.",
   processing: "Your items are being prepared for shipment.",
   shipped: "Your package is on the way.",
   delivered: "Your order has been delivered successfully.",
@@ -27,6 +29,8 @@ const STATUS_COPY: Record<OrderStatus, string> = {
 
 const STATUS_ICONS = {
   pending: Clock3,
+  approved: CheckCircle2,
+  rejected: ShieldCheck,
   processing: ShoppingBag,
   shipped: Truck,
   delivered: PackageCheck,
