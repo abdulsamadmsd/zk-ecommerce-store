@@ -1,105 +1,21 @@
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Product } from "@/types";
 import { useCart } from "@/context/CartContext";
 import { HomeSkeleton } from "@/components/Skeleton";
-import { db } from "@/lib/firebase";
-import { collection, getDocs } from "firebase/firestore";
-import { motion, AnimatePresence } from "framer-motion"; // Added Framer Motion
+import ProductCard from "@/components/ProductCard";
+import { getProducts } from "@/lib/products";
+import { AnimatePresence, motion } from "framer-motion";
 import {
   PackageSearch,
   LayoutGrid,
   Smartphone,
-  Sparkles,
   Watch,
   ShoppingBag,
   Loader2,
   Headphones,
-  ShoppingCart,
 } from "lucide-react";
-
-// --- Sub-component: Alibaba Style Full-Image Card with Motion ---
-const ProductCard = ({
-  product,
-  index,
-}: {
-  product: Product;
-  index: number;
-}) => {
-  const { addToCart } = useCart();
-  const displayImage =
-    (product as any).image ||
-    (product as any).thumbnail ||
-    ((product as any).images && (product as any).images[0]) ||
-    "/placeholder.png";
-
-  return (
-    <motion.div
-      layout
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, delay: index * 0.05 }}
-      whileHover={{ y: -5 }} // Subtle lift on hover
-      className="group flex flex-col h-full cursor-pointer"
-    >
-      {/* Image Container */}
-      <div className="relative aspect-square w-full overflow-hidden rounded-xl bg-gray-100 shadow-sm transition-shadow group-hover:shadow-md">
-        <img
-          src={displayImage}
-          alt={product.title}
-          loading="lazy"
-          className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700 ease-in-out"
-        />
-        <div className="absolute top-2 left-2 bg-black/30 backdrop-blur-md text-white text-[10px] px-2 py-0.5 rounded-md font-bold">
-          #{Math.floor(Math.random() * 10) + 1}
-        </div>
-      </div>
-
-      {/* Content Section */}
-      <div className="mt-3 flex flex-col flex-grow">
-        <h3 className="text-[13px] leading-[1.4] text-gray-800 dark:text-slate-200 line-clamp-2 mb-1 group-hover:text-orange-600 transition-colors">
-          {product.title}
-        </h3>
-
-        <div className="mt-auto">
-          <div className="flex items-center gap-1">
-            <span className="text-[16px] font-bold text-gray-900 dark:text-white">
-              PKR {Number(product.price).toLocaleString()}
-            </span>
-          </div>
-
-          <div className="flex flex-col mt-0.5">
-            <span className="text-[11px] text-gray-500 dark:text-gray-400">
-              Min. order: 1 piece
-            </span>
-            <div className="flex items-center gap-1 mt-0.5">
-              <span className="text-[11px] font-medium text-gray-600 dark:text-gray-400">
-                Hot-selling score:
-              </span>
-              <span className="text-[11px] font-bold text-gray-900 dark:text-white">
-                4.8
-              </span>
-            </div>
-          </div>
-
-          {/* Add to Cart Button with simple scale effect */}
-          <motion.button
-            whileTap={{ scale: 0.95 }}
-            onClick={(e) => {
-              e.stopPropagation();
-              addToCart(product);
-            }}
-            className="mt-3 w-full flex items-center justify-center gap-2 py-2.5 bg-gray-900 dark:bg-white text-white dark:text-black text-xs font-bold rounded-lg hover:bg-orange-600 dark:hover:bg-orange-500 hover:text-white transition-all duration-300 shadow-sm"
-          >
-            <ShoppingCart size={14} />
-            Add to Cart
-          </motion.button>
-        </div>
-      </div>
-    </motion.div>
-  );
-};
 
 const CATEGORIES = [
   { id: "all", name: "All Products", icon: LayoutGrid },
@@ -121,12 +37,7 @@ export default function Home() {
     async function fetchProductsFromFirestore() {
       try {
         setLoading(true);
-        const querySnapshot = await getDocs(collection(db, "products"));
-        // FIX: Added unknown cast to bypass strict property check during build
-        const data = querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        })) as unknown as Product[];
+        const data = await getProducts();
         setProducts(data);
       } catch (error) {
         console.error("Firestore Error:", error);

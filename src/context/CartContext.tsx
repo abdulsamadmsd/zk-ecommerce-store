@@ -6,8 +6,8 @@ import { CartItem, Product } from "@/types";
 interface CartContextType {
   cart: CartItem[];
   addToCart: (product: Product) => void;
-  updateQuantity: (productId: number, action: "plus" | "minus") => void;
-  removeFromCart: (productId: number) => void;
+  updateQuantity: (productId: Product["id"], action: "plus" | "minus") => void;
+  removeFromCart: (productId: Product["id"]) => void;
   clearCart: () => void;
   total: number; // Promised in interface
   cartCount: number;
@@ -61,7 +61,10 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
     });
   };
 
-  const updateQuantity = (productId: number, action: "plus" | "minus") => {
+  const updateQuantity = (
+    productId: Product["id"],
+    action: "plus" | "minus",
+  ) => {
     setCart((prevCart) =>
       prevCart
         .map((item) => {
@@ -76,7 +79,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
     );
   };
 
-  const removeFromCart = (productId: number) => {
+  const removeFromCart = (productId: Product["id"]) => {
     setCart((prevCart) => prevCart.filter((item) => item.id !== productId));
   };
 
