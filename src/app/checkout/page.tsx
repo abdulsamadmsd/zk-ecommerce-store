@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/context/CartContext";
 import toast from "react-hot-toast";
@@ -13,11 +13,18 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useTheme } from "next-themes";
+import {
+  ORDER_SHIPPING_FEE,
+  calculateOrderSubtotal,
+  calculateOrderTotal,
+  createOrder,
+} from "@/lib/orders";
 
 export default function CheckoutPage() {
   const router = useRouter();
   const { theme } = useTheme();
-  const { clearCart, cart, total } = useCart();;
+  const { clearCart, cart } = useCart();
+  const [submitting, setSubmitting] = useState(false);
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -28,8 +35,34 @@ export default function CheckoutPage() {
     phone: "",
   });
 
+  const subtotal = useMemo(() => calculateOrderSubtotal(cart), [cart]);
+  const total = useMemo(() => calculateOrderTotal(subtotal), [subtotal]);
+
   const handleSubmitOrder = (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!cart.length) {
+      toast.error("Your cart is empty.");
+      router.push("/cart");
+      return;
+    }
+
+    setSubmitting(true);
+
+    let orderId = "";
+
+    try {
+      const order = createOrder({
+        customer: formData,
+        cartItems: cart,
+      });
+      orderId = order.id;
+    } catch (error) {
+      console.error("Order creation failed", error);
+      toast.error("Could not place your order. Please try again.");
+      setSubmitting(false);
+      return;
+    }
 
     const isDark = theme === "dark";
 
@@ -50,11 +83,8 @@ export default function CheckoutPage() {
       },
     });
 
-    if (clearCart) clearCart();
-
-    setTimeout(() => {
-      router.push("/");
-    }, 2500);
+    clearCart();
+    router.push(`/order/${orderId}?created=1`);
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -64,6 +94,27 @@ export default function CheckoutPage() {
 
   const inputClasses =
     "w-full p-4 bg-gray-50 dark:bg-slate-900/50 border border-gray-200 dark:border-slate-800 rounded-2xl text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-slate-500 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all duration-200";
+
+  if (!cart.length) {
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-slate-950 pb-20 transition-colors duration-500">
+        <div className="mx-auto max-w-3xl px-4 py-20 text-center">
+          <h1 className="mb-4 text-3xl font-black text-gray-900 dark:text-white">
+            Checkout is unavailable
+          </h1>
+          <p className="mb-8 text-gray-500 dark:text-slate-400">
+            Add at least one item to your cart before placing an order.
+          </p>
+          <Link
+            href="/cart"
+            className="rounded-2xl bg-blue-600 px-6 py-3 font-bold text-white transition-colors hover:bg-blue-700"
+          >
+            Return to cart
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-slate-950 pb-20 transition-colors duration-500">
@@ -99,6 +150,7 @@ export default function CheckoutPage() {
                   name="firstName"
                   placeholder="First Name"
                   className={inputClasses}
+                  value={formData.firstName}
                   onChange={handleInputChange}
                 />
                 <input
@@ -107,6 +159,7 @@ export default function CheckoutPage() {
                   name="lastName"
                   placeholder="Last Name"
                   className={inputClasses}
+                  value={formData.lastName}
                   onChange={handleInputChange}
                 />
               </div>
@@ -116,6 +169,7 @@ export default function CheckoutPage() {
                 name="email"
                 placeholder="Email Address"
                 className={inputClasses}
+                value={formData.email}
                 onChange={handleInputChange}
               />
               <input
@@ -124,6 +178,7 @@ export default function CheckoutPage() {
                 name="address"
                 placeholder="Full Shipping Address"
                 className={inputClasses}
+                value={formData.address}
                 onChange={handleInputChange}
               />
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
@@ -133,6 +188,7 @@ export default function CheckoutPage() {
                   name="city"
                   placeholder="City"
                   className={inputClasses}
+                  value={formData.city}
                   onChange={handleInputChange}
                 />
                 <input
@@ -141,6 +197,7 @@ export default function CheckoutPage() {
                   name="phone"
                   placeholder="Phone Number"
                   className={inputClasses}
+                  value={formData.phone}
                   onChange={handleInputChange}
                 />
               </div>
@@ -148,9 +205,12 @@ export default function CheckoutPage() {
               <div className="pt-6">
                 <button
                   type="submit"
-                  className="w-full bg-blue-600 text-white py-5 rounded-2xl font-black uppercase tracking-widest hover:bg-blue-700 dark:hover:bg-blue-500 transition-all shadow-xl shadow-blue-100 dark:shadow-none active:scale-[0.98]"
+                  disabled={submitting}
+                  className="w-full bg-blue-600 text-white py-5 rounded-2xl font-black uppercase tracking-widest hover:bg-blue-700 dark:hover:bg-blue-500 transition-all shadow-xl shadow-blue-100 dark:shadow-none active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70"
                 >
-                  Place Order â€¢ ${total?.toFixed(2)}
+                  {submitting
+                    ? "Placing Order..."
+                    : `Place Order • $${total.toFixed(2)}`}
                 </button>
               </div>
             </form>
@@ -173,13 +233,13 @@ export default function CheckoutPage() {
                 <div className="flex justify-between text-gray-600 dark:text-slate-400">
                   <span>Subtotal</span>
                   <span className="font-semibold text-gray-900 dark:text-white">
-                    ${total?.toFixed(2)}
+                    ${subtotal.toFixed(2)}
                   </span>
                 </div>
                 <div className="flex justify-between text-gray-600 dark:text-slate-400">
                   <span>Shipping</span>
-                  <span className="text-green-600 dark:text-green-400 font-medium">
-                    Free
+                  <span className="font-medium text-gray-900 dark:text-white">
+                    ${ORDER_SHIPPING_FEE.toFixed(2)}
                   </span>
                 </div>
                 <div className="border-t border-gray-100 dark:border-slate-800 pt-4 flex justify-between">
@@ -187,7 +247,7 @@ export default function CheckoutPage() {
                     Total
                   </span>
                   <span className="text-xl font-black text-blue-600 dark:text-blue-400">
-                    ${total?.toFixed(2)}
+                    ${total.toFixed(2)}
                   </span>
                 </div>
               </div>
@@ -219,3 +279,5 @@ export default function CheckoutPage() {
     </div>
   );
 }
+
+

@@ -13,6 +13,7 @@ import {
   ShoppingBag,
   ShieldCheck,
 } from "lucide-react";
+import { ORDER_SHIPPING_FEE, calculateOrderTotal } from "@/lib/orders";
 
 export default function CartPage() {
   const router = useRouter();
@@ -22,8 +23,8 @@ export default function CartPage() {
     (acc, item) => acc + item.price * item.quantity,
     0,
   );
-  const shipping = 10;
-  const total = subtotal + shipping;
+  const shipping = ORDER_SHIPPING_FEE;
+  const total = calculateOrderTotal(subtotal);
 
   const handleCheckout = () => {
     router.push("/checkout");
