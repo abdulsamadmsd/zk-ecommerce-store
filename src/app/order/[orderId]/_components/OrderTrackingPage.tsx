@@ -221,7 +221,7 @@ export default function OrderTrackingPage({
                       {item.title}
                     </h3>
                     <p className="text-sm text-slate-500 dark:text-slate-400">
-                      {item.category} • Qty {item.quantity}
+                      {item.category} â€¢ Qty {item.quantity}
                     </p>
                   </div>
                   <p className="text-lg font-black text-blue-600 dark:text-blue-400">
@@ -262,7 +262,7 @@ export default function OrderTrackingPage({
                     {order.customer.firstName} {order.customer.lastName}
                   </p>
                   <p className="text-slate-500 dark:text-slate-400">
-                    {order.customer.email} • {order.customer.phone}
+                    {order.customer.email} â€¢ {order.customer.phone}
                   </p>
                 </div>
               </div>

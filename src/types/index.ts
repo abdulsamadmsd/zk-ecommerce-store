@@ -17,6 +17,8 @@ export interface CartItem extends Product {
 
 export type OrderStatus =
   | "pending"
+  | "approved"
+  | "rejected"
   | "processing"
   | "shipped"
   | "delivered";
@@ -48,4 +50,5 @@ export interface Order {
   totalAmount: number;
   status: OrderStatus;
   createdAt: string;
+  updatedAt: string;
 }

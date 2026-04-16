@@ -210,7 +210,7 @@ export default function CheckoutPage() {
                 >
                   {submitting
                     ? "Placing Order..."
-                    : `Place Order • $${total.toFixed(2)}`}
+                    : `Place Order â€¢ $${total.toFixed(2)}`}
                 </button>
               </div>
             </form>

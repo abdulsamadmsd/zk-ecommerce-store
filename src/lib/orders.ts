@@ -3,17 +3,36 @@
 import { CartItem, Order, OrderCustomer, OrderStatus } from "@/types";
 
 const ORDERS_STORAGE_KEY = "zk_orders";
+const ORDERS_UPDATED_EVENT = "zk_orders_updated";
 export const ORDER_SHIPPING_FEE = 10;
 
 export const ORDER_STATUS_STEPS: OrderStatus[] = [
   "pending",
+  "approved",
   "processing",
   "shipped",
   "delivered",
 ];
 
+const VALID_STATUS_TRANSITIONS: Record<OrderStatus, OrderStatus[]> = {
+  pending: ["approved", "rejected"],
+  approved: ["processing", "rejected"],
+  rejected: [],
+  processing: ["shipped"],
+  shipped: ["delivered"],
+  delivered: [],
+};
+
 function canUseStorage() {
   return typeof window !== "undefined";
+}
+
+function notifyOrdersChanged() {
+  if (!canUseStorage()) {
+    return;
+  }
+
+  window.dispatchEvent(new CustomEvent(ORDERS_UPDATED_EVENT));
 }
 
 function parseStoredOrders(rawOrders: string | null): Order[] {
@@ -47,8 +66,79 @@ export function getStoredOrders(): Order[] {
   return parseStoredOrders(window.localStorage.getItem(ORDERS_STORAGE_KEY));
 }
 
+function saveStoredOrders(orders: Order[]) {
+  if (!canUseStorage()) {
+    return;
+  }
+
+  window.localStorage.setItem(ORDERS_STORAGE_KEY, JSON.stringify(orders));
+  notifyOrdersChanged();
+}
+
+export function getAllOrders() {
+  return getStoredOrders();
+}
+
 export function getOrderById(orderId: string): Order | null {
   return getStoredOrders().find((order) => order.id === orderId) || null;
+}
+
+export function canTransitionOrderStatus(
+  currentStatus: OrderStatus,
+  nextStatus: OrderStatus,
+) {
+  return VALID_STATUS_TRANSITIONS[currentStatus].includes(nextStatus);
+}
+
+export function updateOrderStatus(orderId: string, nextStatus: OrderStatus) {
+  const orders = getStoredOrders();
+  const targetOrder = orders.find((order) => order.id === orderId);
+
+  if (!targetOrder) {
+    throw new Error("Order not found.");
+  }
+
+  if (targetOrder.status === nextStatus) {
+    return targetOrder;
+  }
+
+  if (!canTransitionOrderStatus(targetOrder.status, nextStatus)) {
+    throw new Error(
+      `Invalid order transition: ${targetOrder.status} -> ${nextStatus}`,
+    );
+  }
+
+  const updatedOrder: Order = {
+    ...targetOrder,
+    status: nextStatus,
+    updatedAt: new Date().toISOString(),
+  };
+
+  saveStoredOrders(
+    orders.map((order) => (order.id === orderId ? updatedOrder : order)),
+  );
+
+  return updatedOrder;
+}
+
+export function subscribeToOrders(listener: () => void) {
+  if (!canUseStorage()) {
+    return () => undefined;
+  }
+
+  const handleStorage = (event: StorageEvent) => {
+    if (event.key === ORDERS_STORAGE_KEY) {
+      listener();
+    }
+  };
+
+  window.addEventListener("storage", handleStorage);
+  window.addEventListener(ORDERS_UPDATED_EVENT, listener);
+
+  return () => {
+    window.removeEventListener("storage", handleStorage);
+    window.removeEventListener(ORDERS_UPDATED_EVENT, listener);
+  };
 }
 
 export function calculateOrderSubtotal(items: CartItem[]) {
@@ -87,14 +177,12 @@ export function createOrder({
     totalAmount: calculateOrderTotal(subtotal),
     status: "pending",
     createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
   };
 
   if (canUseStorage()) {
     const existingOrders = getStoredOrders();
-    window.localStorage.setItem(
-      ORDERS_STORAGE_KEY,
-      JSON.stringify([newOrder, ...existingOrders]),
-    );
+    saveStoredOrders([newOrder, ...existingOrders]);
   }
 
   return newOrder;
