@@ -15,7 +15,7 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
       <div>
         <Link
           href="/"
-          className="group mb-8 inline-flex items-center text-sm font-medium text-slate-500 transition-colors hover:text-blue-600"
+          className="group mb-4 inline-flex items-center text-sm font-medium text-slate-500 transition-colors hover:text-blue-600"
         >
           <ArrowLeft
             size={16}
@@ -31,7 +31,7 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
             fill
             priority
             sizes="(max-width: 1024px) 100vw, 50vw"
-            className="object-contain p-8"
+            className="object-cover"
           />
         </div>
       </div>

@@ -27,7 +27,7 @@ export default async function ProductPage(props: PageProps<"/product/[id]">) {
   }
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+    <div className="mx-auto max-w-4xl px-4  py-3 sm:px-4 lg:px-8">
       <ProductDetails product={product} />
     </div>
   );

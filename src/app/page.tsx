@@ -79,7 +79,8 @@ export default function Home() {
     <div className="min-h-screen bg-white dark:bg-slate-950 transition-colors duration-500">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {/* Category Tabs with Animated Bottom Bar */}
-        <div className="flex gap-6 border-b border-gray-100 dark:border-slate-800 mb-8 overflow-x-auto no-scrollbar relative">
+        <div className="flex gap-5 border-b border-gray-100 dark:border-slate-800 mb-4
+         overflow-x-auto no-scrollbar relative">
           {CATEGORIES.map((cat) => (
             <button
               key={cat.id}
@@ -110,7 +111,8 @@ export default function Home() {
           <>
             <motion.div
               layout
-              className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-5 gap-x-4 gap-y-10"
+              className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4
+               lg:grid-cols-5 xl:grid-cols-5 gap-x-4 gap-y-4"
             >
               <AnimatePresence mode="popLayout">
                 {filteredProducts.map((product, idx) => (
