@@ -20,7 +20,7 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-3 sm:px-3 lg:px-8">
         <div className="flex justify-between items-center h-20">
           {/* 1. BRAND LOGO */}
-          <div className="flex items-center shrink-1">
+          <div className="flex items-center shrink-0">
             <Link href="/" className="flex items-center gap-3 sm:gap-4 group">
               <div
                 className="relative flex items-center justify-center
