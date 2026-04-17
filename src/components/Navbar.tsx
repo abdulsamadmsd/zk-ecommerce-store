@@ -28,8 +28,8 @@ export default function Navbar() {
                 <Image
                   src={zklogo}
                   alt="Logo"
-                  width={75}
-                  height={75}
+                  width={100}
+                  height={100}
                   className="object-fill rounded-4xl"
                   priority
                 />
