@@ -19,76 +19,94 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
 
   return (
     <motion.article
-      layout
-      initial={{ opacity: 0, y: 20 }} // initial animation (on load)
-      animate={{ opacity: 1, y: 1 }} // animate to visible
-      transition={{ duration: 0.5, delay: index * 0.5 }} // stagger only on load
-      whileHover={{
-        y: -5,
-        transition: { duration: 0.15, delay: 0 }, // instant hover (no delay)
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-50px" }}
+      transition={{
+        duration: 0.6,
+        delay: Math.min(index * 0.1, 0.3), // Cap delay so bottom items load faster
+        ease: [0.215, 0.61, 0.355, 1], // Cubic-bezier for a "swift" entrance
       }}
-      className="group relative flex h-full flex-col overflow-hidden rounded-[2rem] 
-      border border-slate-200 bg-white transition-all duration-200
-      hover:shadow-[0_20px_50px_rgba(0,0,0,0.04)] dark:border-slate-800 dark:bg-slate-900"
+      whileHover={{ y: -6 }}
+      className="group relative flex h-full flex-col overflow-hidden rounded-[2rem]
+      border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900/50
+      hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_20px_40px_rgba(0,0,0,0.3)] 
+      transition-shadow duration-500 ease-out"
     >
+      {/* 1. CLICKABLE LAYER (Invisible Link) */}
       <Link
         href={href}
         aria-label={`View details for ${product.title}`}
-        className="absolute inset-0 z-10 rounded-[2rem]"
+        className="absolute inset-0 z-10"
       />
 
       <div className="relative flex h-full flex-col">
-        <div
-          className="relative aspect-square w-full overflow-hidden rounded-2xl
-           bg-[#f8f8f8] dark:bg-slate-800/50"
-        >
-          <Image
-            src={getProductImage(product)} // get image
-            alt={product.title} // alt text
-            fill // fill container
-            sizes="(max-width: 768px) 100vw, 33vw" // responsive sizes
-            className="object-cover transition-transform duration-700 group-hover:scale-110" // zoom on hover
-          />
+        {/* 2. IMAGE SECTION - "The Zoom" */}
+        <div className="relative aspect-[4/5] w-full overflow-hidden bg-[#f3f4f6] dark:bg-slate-800/20">
+          <motion.div
+            className="h-full w-full will-change-transform"
+            whileHover={{ scale: 1.05 }}
+            transition={{ type: "spring", stiffness: 300, damping: 20 }}
+          >
+            <Image
+              src={getProductImage(product)}
+              alt={product.title}
+              fill
+              sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
+              className="object-cover transition-opacity duration-500"
+              priority={index < 4}
+            />
+          </motion.div>
+
+          {/* Subtle Overlay on Hover */}
+          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-500 pointer-events-none" />
         </div>
 
+        {/* 3. CONTENT - "The Reveal" */}
         <div className="flex flex-grow flex-col p-5">
-          <div className="flex justify-between items-center mb-2">
-            <p className="text-[10px] font-black uppercase tracking-widest text-blue-600">
+          <div className="flex justify-between items-center mb-2.5">
+            <span className="px-2 py-0.5 rounded-full bg-blue-50 dark:bg-blue-500/10 text-[9px] font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400">
               {product.category.replace("-", " ")}
-            </p>
+            </span>
 
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-1 bg-slate-50 dark:bg-slate-800/50 px-2 py-1 rounded-lg">
               <Star size={10} className="fill-yellow-400 text-yellow-400" />
-              <span className="text-xs font-bold text-slate-400">
+              <span className="text-[11px] font-bold text-slate-600 dark:text-slate-400">
                 {product.rating || "4.5"}
               </span>
             </div>
           </div>
 
-          <h3 className="font-bold text-slate-900 dark:text-white line-clamp-2 mb-3 leading-snug group-hover:text-blue-600 transition-colors">
+          <h3 className="font-semibold text-slate-900 dark:text-white line-clamp-2 mb-2 text-base leading-tight group-hover:text-blue-600 transition-colors duration-300">
             {product.title}
           </h3>
 
-          <p className="mb-4 line-clamp-2 text-xs text-slate-500">
+          <p className="mb-4 line-clamp-2 text-xs text-slate-500 leading-relaxed">
             {product.description ||
-              "High-performance hardware designed for professional-grade reliability."}
+              "Hardware designed for professional-grade reliability."}
           </p>
 
-          <div className="mt-auto pt-4 flex items-center justify-between border-t border-slate-50 dark:border-slate-800">
-            <div>
-              <p className="text-[10px] text-slate-400 font-bold line-through mb-0.5">
+          {/* 4. FOOTER - "The Action" */}
+          <div className="mt-auto pt-4 flex items-center justify-between border-t border-slate-100 dark:border-slate-800/60">
+            <div className="flex flex-col">
+              <span className="text-[10px] text-slate-400 line-through font-medium">
                 ${(product.price * 1.2).toFixed(2)}
-              </p>
-
-              <p className="text-xl font-black text-slate-900 dark:text-white tracking-tighter">
+              </span>
+              <span className="text-lg font-bold text-slate-900 dark:text-white leading-none">
                 ${product.price}
-              </p>
+              </span>
             </div>
 
-            <AddToCartButton
-              product={product}
-              className="relative z-20 rounded-2xl bg-slate-900 p-3.5 text-white shadow-md transition-all active:scale-95 hover:bg-blue-600 dark:bg-white dark:text-slate-900 dark:hover:bg-blue-500 dark:hover:text-white"
-            />
+            {/* Z-Index ensures button is clickable over the Link layer */}
+            <div className="relative z-20">
+              <AddToCartButton
+                product={product}
+                className="flex items-center justify-center rounded-xl bg-slate-900 p-3 text-white
+                shadow-sm transition-all duration-300 
+                hover:bg-blue-600 hover:shadow-blue-500/20
+                dark:bg-white dark:text-slate-900 dark:hover:bg-blue-500 dark:hover:text-white"
+              />
+            </div>
           </div>
         </div>
       </div>
