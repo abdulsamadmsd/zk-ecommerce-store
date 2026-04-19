@@ -1,11 +1,15 @@
 "use client";
 
 import { motion } from "framer-motion";
-import Link from "next/link";
+
 
 export default function AboutPage() {
   return (
-    <section className="w-full min-h-screen px-6 md:px-16 py-16 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 overflow-hidden">
+    <section
+      className="w-full min-h-screen px-6 md:px-16 py-16 bg-white 
+     dark:bg-gray-900 text-gray-800 dark:text-gray-200 overflow-hidden"
+      id="about"
+    >
       {/* 🔹 Hero Section */}
       <motion.div
         initial={{ opacity: 0, y: 40 }}
@@ -125,8 +129,6 @@ export default function AboutPage() {
         <p className="text-gray-600 dark:text-gray-400 mb-6">
           Explore products and experience a modern e-commerce platform.
         </p>
-
-        
       </motion.div>
     </section>
   );

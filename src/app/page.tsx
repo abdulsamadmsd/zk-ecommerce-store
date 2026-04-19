@@ -16,7 +16,7 @@ import {
   Loader2,
   Headphones,
 } from "lucide-react";
-import AboutPage from "@/components/page";
+import AboutPage from "@/components/sections/AboutSection";
 import ContactPage from "@/components/sections/ContactSection";
 import HeroSection from "@/components/sections/HeroSection";
 
