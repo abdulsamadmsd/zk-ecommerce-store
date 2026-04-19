@@ -86,8 +86,7 @@ export default function AuthButton() {
               Account
             </p>
             <p className="text-lg font-semibold leading-tight
-             bg-gradient-to-r from-[#ebb402] via-[#ff0303] to-[#00ff4c] 
-             bg-clip-text text-transparent ">
+             text-white ">
               {user.displayName ? user.displayName : "User"}
             </p>
           </div>

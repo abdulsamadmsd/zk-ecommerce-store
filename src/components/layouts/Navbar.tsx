@@ -53,7 +53,10 @@ export default function Navbar() {
 
   return (
     <>
-      <nav className="sticky top-0 z-50 w-full border-b border-gray-100/80 dark:border-slate-800/50 bg-blue-600 text-white dark:bg-slate-950/70 backdrop-blur-xl">
+      <nav
+        className="sticky top-0 z-50 w-full border-b border-gray-100/80
+       dark:border-slate-800/50 bg-blue-600 text-white dark:bg-blue-700 backdrop-blur-xl"
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <Link href="/" className="flex items-center">
@@ -84,7 +87,10 @@ export default function Navbar() {
 
             <div className="hidden lg:flex flex-1 max-w-md mx-6">
               <div className="relative w-full">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-white" size={18} />
+                <Search
+                  className="absolute left-4 top-1/2 -translate-y-1/2 text-white"
+                  size={18}
+                />
                 <input
                   type="text"
                   placeholder="Search products..."
@@ -93,7 +99,10 @@ export default function Navbar() {
                   className="w-full bg-white/20 dark:bg-slate-900/60 rounded-full py-2 pl-11 pr-10 text-sm placeholder:text-white/70 focus:outline-none focus:ring-2 focus:ring-white/30"
                 />
                 {searchQuery && (
-                  <button onClick={() => setSearchQuery("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-white hover:text-red-300">
+                  <button
+                    onClick={() => setSearchQuery("")}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-white hover:text-red-300"
+                  >
                     <X size={14} />
                   </button>
                 )}
@@ -101,8 +110,13 @@ export default function Navbar() {
             </div>
 
             <div className="flex items-center gap-3">
-              <div className="hidden md:block"><ThemeToggle /></div>
-              <Link href="/cart" className="relative p-2 rounded-full hover:bg-white/10 transition">
+              <div className="hidden md:block">
+                <ThemeToggle />
+              </div>
+              <Link
+                href="/cart"
+                className="relative p-2 rounded-full hover:bg-white/10 transition"
+              >
                 <ShoppingCart size={22} />
                 {cartCount > 0 && (
                   <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] w-5 h-5 flex items-center justify-center rounded-full">
@@ -110,8 +124,15 @@ export default function Navbar() {
                   </span>
                 )}
               </Link>
-              <div className="hidden md:block"><AuthButton /></div>
-              <button onClick={() => setMenuOpen(true)} className="md:hidden p-2"><Menu /></button>
+              <div className="hidden md:block">
+                <AuthButton />
+              </div>
+              <button
+                onClick={() => setMenuOpen(true)}
+                className="md:hidden p-2"
+              >
+                <Menu />
+              </button>
             </div>
           </div>
         </div>
@@ -120,11 +141,29 @@ export default function Navbar() {
       <AnimatePresence>
         {menuOpen && (
           <>
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setMenuOpen(false)} className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50" />
-            <motion.div initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }} transition={{ type: "tween", duration: 0.3 }} className="fixed top-0 right-0 h-full w-[80%] max-w-sm bg-blue-700 dark:bg-slate-950 z-50 shadow-2xl flex flex-col p-6">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setMenuOpen(false)}
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50"
+            />
+            <motion.div
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ type: "tween", duration: 0.3 }}
+              className="fixed top-0 right-0 h-full w-[80%] max-w-sm bg-blue-700 dark:bg-slate-950 z-50 
+             shadow-2xl flex flex-col p-6"
+            >
               <div className="flex justify-between items-center mb-8">
                 <Image src={zklogo} alt="logo" width={60} height={60} />
-                <button onClick={() => setMenuOpen(false)} className="text-white"><X /></button>
+                <button
+                  onClick={() => setMenuOpen(false)}
+                  className="text-white"
+                >
+                  <X />
+                </button>
               </div>
               <div className="flex flex-col gap-6 text-xl font-semibold text-white">
                 {navLinks.map((link) => (
