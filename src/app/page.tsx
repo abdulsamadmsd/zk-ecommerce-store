@@ -86,7 +86,7 @@ export default function Home() {
       {/* ================= PRODUCTS ================= */}
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {/* CATEGORY TABS */}
-        <div className="flex gap-5 border-b border-gray-100 dark:border-slate-800 mb-6 overflow-x-auto">
+        <div id="product" className="flex gap-5 border-b border-gray-100 dark:border-slate-800 mb-6 overflow-x-auto">
           {CATEGORIES.map((cat) => (
             <button
               key={cat.id}
