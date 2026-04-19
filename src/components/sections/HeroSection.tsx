@@ -70,7 +70,8 @@ export default function HeroSection() {
           className="relative"
         >
           {/* Container adjusted for a cleaner "Floating" look */}
-          <div className="relative w-full h-[350px] md:h-[480px] rounded-3xl overflow-hidden shadow-2xl border-4 border-white dark:border-slate-900">
+          <div className="relative w-full h-[350px] md:h-[400px] rounded-3xl 
+          overflow-hidden shadow-2xl border-4 border-white dark:border-slate-900">
             <Image
               src={heroImg}
               alt="ZK Store Products"

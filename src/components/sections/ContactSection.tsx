@@ -39,7 +39,8 @@ export default function ContactPage() {
       >
         <h1 className="text-4xl md:text-6xl font-extrabold mb-2">
           Get in
-          <span className="block bg-gradient-to-r from-blue-500 to-purple-500 text-transparent bg-clip-text">
+          <span className=" ml-2 bg-gradient-to-r from-blue-500 to-purple-500 
+          text-transparent bg-clip-text">
             Touch
           </span>
         </h1>
@@ -122,14 +123,7 @@ export default function ContactPage() {
             <p>📍 Pakistan</p>
           </div>
 
-          <div className="mt-8">
-            <Link
-              href="/"
-              className="inline-block px-6 py-3 rounded-xl border border-gray-400 dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-700 transition"
-            >
-              Back to Home
-            </Link>
-          </div>
+         
         </motion.div>
       </div>
     </section>

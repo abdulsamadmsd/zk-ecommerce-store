@@ -173,13 +173,7 @@ export default function Home() {
         </div>
       </motion.section>
 
-      {/* ================= FOOTER ================= */}
-      <footer className="border-t border-gray-200 dark:border-slate-800 py-10 text-center text-gray-500">
-        <p className="font-medium">ZK E-Commerce Store</p>
-        <p className="text-sm">
-          Built with Next.js • Firebase • Tailwind • Framer Motion
-        </p>
-      </footer>
+    
     </div>
   );
 }
