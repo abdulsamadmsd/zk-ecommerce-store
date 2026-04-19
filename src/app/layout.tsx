@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import Navbar from "@/components/layouts/Navbar";
+import Footer from "@/components/layouts/Footer";
 import { CartProvider } from "@/context/CartContext";
 import { Toaster } from "react-hot-toast";
 import PageTransition from "@/components/PageTransition";

@@ -25,7 +25,11 @@ export default function ContactPage() {
   };
 
   return (
-    <section className="w-full min-h-screen px-6 md:px-16 py-16 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200">
+    <section
+      id="contact"
+      className="w-full min-h-screen px-6 md:px-16 py-16
+       bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200"
+    >
       {/* 🔹 Hero */}
       <motion.div
         initial={{ opacity: 0, y: 40 }}

@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, RotateCcw, ShieldCheck, Star, Truck } from "lucide-react";
-import AddToCartButton from "@/components/AddToCartButton";
+import AddToCartButton from "@/components/ui/AddToCartButton";
 import { getProductImage } from "@/lib/products";
 import { Product } from "@/types";
 

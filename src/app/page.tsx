@@ -3,8 +3,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { Product } from "@/types";
 import { useCart } from "@/context/CartContext";
-import { HomeSkeleton } from "@/components/Skeleton";
-import ProductCard from "@/components/ProductCard";
+import { HomeSkeleton } from "@/components/ui/Skeleton";
+import ProductCard from "@/components/product/ProductCard";
 import { getProducts } from "@/lib/products";
 import { AnimatePresence, motion } from "framer-motion";
 import {
@@ -16,6 +16,9 @@ import {
   Loader2,
   Headphones,
 } from "lucide-react";
+import AboutPage from "@/components/page";
+import ContactPage from "@/components/sections/ContactSection";
+import HeroSection from "@/components/sections/HeroSection";
 
 const CATEGORIES = [
   { id: "all", name: "All Products", icon: LayoutGrid },
@@ -77,10 +80,13 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-white dark:bg-slate-950 transition-colors duration-500">
+      
+      <HeroSection />
+
+      {/* ================= PRODUCTS ================= */}
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        {/* Category Tabs with Animated Bottom Bar */}
-        <div className="flex gap-5 border-b border-gray-100 dark:border-slate-800 mb-4
-         overflow-x-auto no-scrollbar relative">
+        {/* CATEGORY TABS */}
+        <div className="flex gap-5 border-b border-gray-100 dark:border-slate-800 mb-6 overflow-x-auto">
           {CATEGORIES.map((cat) => (
             <button
               key={cat.id}
@@ -88,73 +94,92 @@ export default function Home() {
                 setSelectedCategory(cat.id);
                 setVisibleCount(20);
               }}
-              className={`pb-3 text-sm font-medium transition-all whitespace-nowrap relative ${
+              className={`pb-3 text-sm font-medium whitespace-nowrap relative ${
                 selectedCategory === cat.id
                   ? "text-black dark:text-white font-bold"
-                  : "text-gray-500 hover:text-gray-800"
+                  : "text-gray-500"
               }`}
             >
               {cat.name}
+
               {selectedCategory === cat.id && (
                 <motion.div
                   layoutId="activeTab"
-                  className="absolute bottom-0 left-0 right-0 h-0.5 bg-black dark:bg-white"
-                  transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                  className="absolute bottom-0 left-0 right-0 h-[2px] bg-black dark:bg-white"
                 />
               )}
             </button>
           ))}
         </div>
 
-        {/* The Grid with Entrance Animation */}
-        {filteredProducts.length > 0 ? (
-          <>
-            <motion.div
-              layout
-              className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4
-               lg:grid-cols-5 xl:grid-cols-5 gap-x-4 gap-y-4"
-            >
-              <AnimatePresence mode="popLayout">
-                {filteredProducts.map((product, idx) => (
-                  <ProductCard key={product.id} product={product} index={idx} />
-                ))}
-              </AnimatePresence>
-            </motion.div>
+        {/* PRODUCTS GRID */}
+        <motion.div
+          layout
+          className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5"
+        >
+          <AnimatePresence>
+            {filteredProducts.map((product, idx) => (
+              <ProductCard key={product.id} product={product} index={idx} />
+            ))}
+          </AnimatePresence>
+        </motion.div>
 
-            {filteredProducts.length < totalItemsInCategory && !searchQuery && (
-              <div className="mt-16 flex justify-center">
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => {
-                    setLoadMoreLoading(true);
-                    setTimeout(() => {
-                      setVisibleCount((v) => v + 20);
-                      setLoadMoreLoading(false);
-                    }, 500);
-                  }}
-                  className="px-10 py-2.5 border border-gray-300 rounded-full font-bold text-sm hover:border-orange-500 hover:text-orange-600 transition-all flex items-center gap-2 bg-white dark:bg-slate-900"
-                >
-                  {loadMoreLoading ? (
-                    <Loader2 className="animate-spin" size={16} />
-                  ) : (
-                    "Load more"
-                  )}
-                </motion.button>
-              </div>
-            )}
-          </>
-        ) : (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="text-center py-20 text-gray-400"
-          >
-            <PackageSearch className="mx-auto mb-4" size={48} />
-            <p>No products found in this category.</p>
-          </motion.div>
+        {/* LOAD MORE */}
+        {filteredProducts.length < totalItemsInCategory && !searchQuery && (
+          <div className="mt-16 flex justify-center">
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => {
+                setLoadMoreLoading(true);
+                setTimeout(() => {
+                  setVisibleCount((v) => v + 20);
+                  setLoadMoreLoading(false);
+                }, 500);
+              }}
+              className="px-10 py-2.5 border border-gray-300 rounded-full font-bold text-sm hover:border-blue-500 hover:text-blue-600 transition-all flex items-center gap-2"
+            >
+              {loadMoreLoading ? (
+                <Loader2 className="animate-spin" size={16} />
+              ) : (
+                "Load more"
+              )}
+            </motion.button>
+          </div>
         )}
       </div>
+
+      {/* ================= ABOUT SECTION ================= */}
+    < motion.section
+        initial={{ opacity: 0, y: 80 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        className="py-24 px-6 bg-gray-50 dark:bg-slate-900"
+      >
+        <div>
+          <AboutPage />
+        </div>
+      </motion.section> 
+
+      {/* ================= CONTACT SECTION ================= */}
+      <motion.section
+        initial={{ opacity: 0, y: 80 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        className="py-24 px-6"
+      >
+        <div>
+          <ContactPage />
+        </div>
+      </motion.section>
+
+      {/* ================= FOOTER ================= */}
+      <footer className="border-t border-gray-200 dark:border-slate-800 py-10 text-center text-gray-500">
+        <p className="font-medium">ZK E-Commerce Store</p>
+        <p className="text-sm">
+          Built with Next.js • Firebase • Tailwind • Framer Motion
+        </p>
+      </footer>
     </div>
   );
 }

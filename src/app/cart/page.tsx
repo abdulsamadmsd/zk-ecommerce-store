@@ -4,6 +4,8 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
+import { getProductImage } from "@/lib/products";
+import PageTransition from "@/components/PageTransition";
 import { useRouter } from "next/navigation";
 import {
   Trash2,
@@ -53,6 +55,7 @@ export default function CartPage() {
   }
 
   return (
+    <PageTransition>
     <div className="min-h-screen bg-white dark:bg-slate-950 py-10 transition-colors">
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex items-center justify-between mb-10">
@@ -81,12 +84,7 @@ export default function CartPage() {
               >
                 <div className="relative w-28 h-28 flex-shrink-0 bg-gray-50 dark:bg-slate-800 rounded-2xl p-3">
                   <Image
-                    src={
-                      (item as any).thumbnail ||
-                      (item as any).image ||
-                      ((item as any).images && (item as any).images[0]) ||
-                      "/placeholder.png"
-                    }
+                    src={getProductImage(item)}
                     alt={item.title || "Product Image"}
                     fill
                     className="object-contain"
@@ -169,5 +167,6 @@ export default function CartPage() {
         </div>
       </div>
     </div>
+    </PageTransition>
   );
 }

@@ -6,7 +6,7 @@ import Link from "next/link";
 import { Product } from "@/types";
 import { Star } from "lucide-react";
 import { motion } from "framer-motion";
-import AddToCartButton from "./AddToCartButton";
+import AddToCartButton from "../ui/AddToCartButton";
 import { getProductImage } from "@/lib/products";
 
 interface ProductCardProps {

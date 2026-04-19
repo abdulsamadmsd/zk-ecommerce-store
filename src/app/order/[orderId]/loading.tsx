@@ -1,4 +1,4 @@
-import { OrderTrackingSkeleton } from "@/components/Skeleton";
+import { OrderTrackingSkeleton } from "@/components/ui/Skeleton";
 
 export default function Loading() {
   return <OrderTrackingSkeleton />;
