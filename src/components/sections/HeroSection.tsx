@@ -9,7 +9,8 @@ import { Zap, ArrowRight } from "lucide-react";
 export default function HeroSection() {
   return (
     // 1. Reduced height/padding on the section itself
-    <section className="relative overflow-hidden bg-white dark:bg-slate-950 pt-4 md:pt-5 pb-4 md:pb-6" id="home">
+    <section className="relative overflow-hidden bg-white dark:bg-slate-950 pt-4 md:pt-5 pb-4 md:pb-6"
+     id="home">
       {/* 🔥 BACKGROUND GLOW - Adjusted top position */}
       <div className="absolute inset-0 flex justify-center pointer-events-none top-[-10%]">
         <div className="w-[600px] h-[400px] bg-blue-500/10 blur-[120px] rounded-full" />
