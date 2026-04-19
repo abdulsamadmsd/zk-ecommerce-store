@@ -27,7 +27,7 @@ export default function ContactPage() {
   return (
     <section
       id="contact"
-      className="w-full min-h-screen px-6 md:px-16 py-16
+      className="w-full min-h-screen px-6 md:px-8 py-7
        bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200"
     >
       {/* 🔹 Hero */}
@@ -37,7 +37,7 @@ export default function ContactPage() {
         transition={{ duration: 0.6 }}
         className="max-w-5xl mx-auto text-center mb-16"
       >
-        <h1 className="text-4xl md:text-6xl font-extrabold mb-6">
+        <h1 className="text-4xl md:text-6xl font-extrabold mb-2">
           Get in
           <span className="block bg-gradient-to-r from-blue-500 to-purple-500 text-transparent bg-clip-text">
             Touch

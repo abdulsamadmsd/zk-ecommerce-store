@@ -82,32 +82,45 @@ export default function AuthButton() {
           className="relative flex items-center gap-3 pl-4 border-l border-gray-200 dark:border-slate-800 ml-2 cursor-pointer select-none"
         >
           <div className="text-right hidden sm:block">
-            <p className="text-[10px] text-gray-500 uppercase font-bold tracking-widest leading-none">
+            <p className="text-[10px] text-white uppercase font-bold tracking-widest leading-none">
               Account
             </p>
-            <p className="text-sm font-semibold text-gray-900 dark:text-white leading-tight">
-              {user.displayName?.split(" ")[0]}
+            <p className="text-lg font-semibold leading-tight
+             bg-gradient-to-r from-[#ebb402] via-[#ff0303] to-[#00ff4c] 
+             bg-clip-text text-transparent ">
+              {user.displayName ? user.displayName : "User"}
             </p>
           </div>
 
-          <div className="relative w-10 h-10">
+          <div className="relative w-10 h-10 ">
             <Image
               src={user.photoURL || "/default-avatar.png"}
               alt="User"
               fill
               referrerPolicy="no-referrer"
-              className={`rounded-full ring-2 shadow-md transition-all object-cover ${isOpen ? "ring-blue-500" : "ring-white dark:ring-slate-900"}`}
+              className={`rounded-full ring-2 shadow-md transition-all 
+                object-cover ${isOpen ? "ring-blue-500" : "ring-white dark:ring-slate-900"}`}
             />
-            <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white dark:border-slate-950 rounded-full"></div>
+            <div
+              className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2
+             border-white dark:border-slate-950 rounded-full"
+            ></div>
           </div>
 
           {/* --- HIGH LEVEL DROPDOWN (Now state-controlled) --- */}
-          <UserMenu isOpen={isOpen} user={user} onLogout={handleLogout} onClose={() => setIsOpen(false)} />
+          <UserMenu
+            isOpen={isOpen}
+            user={user}
+            onLogout={handleLogout}
+            onClose={() => setIsOpen(false)}
+          />
         </div>
       ) : (
         <button
           onClick={handleLogin}
-          className="flex items-center gap-3 bg-white dark:bg-slate-900 border border-gray-300 dark:border-slate-700 px-3 py-2 rounded-lg transition-all hover:border-blue-400 hover:shadow-md active:scale-95"
+          className="flex items-center gap-3 bg-white dark:bg-slate-900 
+          border border-gray-300 dark:border-slate-700 px-3 py-2 rounded-lg transition-all
+           hover:border-blue-400 hover:shadow-md active:scale-95"
         >
           <svg width="18" height="18" viewBox="0 0 18 18">
             <path

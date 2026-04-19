@@ -9,13 +9,13 @@ import { Zap, ArrowRight } from "lucide-react";
 export default function HeroSection() {
   return (
     // 1. Reduced height/padding on the section itself
-    <section className="relative overflow-hidden bg-white dark:bg-slate-950 pt-10 md:pt-20 pb-10 md:pb-20">
+    <section className="relative overflow-hidden bg-white dark:bg-slate-950 pt-4 md:pt-5 pb-4 md:pb-6" id="home">
       {/* 🔥 BACKGROUND GLOW - Adjusted top position */}
       <div className="absolute inset-0 flex justify-center pointer-events-none top-[-10%]">
         <div className="w-[600px] h-[400px] bg-blue-500/10 blur-[120px] rounded-full" />
       </div>
 
-      {/* 2. Changed py-20 to pt-4 to pull content up */}
+     
       <div className="max-w-7xl mx-auto px-6 pt-4 md:pt-8 grid md:grid-cols-2 gap-10 items-center relative z-10">
         {/* ================= LEFT CONTENT ================= */}
         <motion.div
@@ -23,7 +23,7 @@ export default function HeroSection() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          {/* TAG */}
+          
           <div className="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-blue-50 dark:bg-slate-800 text-sm mb-6 border border-blue-100 dark:border-slate-700">
             <Zap size={14} className="text-blue-600" />
             <span className="text-blue-900 dark:text-blue-100 font-medium">
@@ -31,20 +31,20 @@ export default function HeroSection() {
             </span>
           </div>
 
-          {/* HEADING */}
+          
           <h1 className="text-4xl md:text-6xl font-extrabold leading-tight tracking-tight text-slate-900 dark:text-white">
             Shop Smarter,
             <span className="block text-blue-600">Live Better</span>
           </h1>
 
-          {/* DESCRIPTION */}
+         
           <p className="mt-6 text-gray-600 dark:text-gray-400 text-lg max-w-lg leading-relaxed">
             Discover high-quality products with fast delivery, smooth
             performance, and a premium user experience built for modern users.
           </p>
 
-          {/* CTA BUTTONS */}
-          <div className="mt-8 flex gap-4 flex-wrap">
+          
+          <div className="mt-3 flex gap-4 flex-wrap">
             <Link
               href="#products"
               className="inline-flex items-center gap-2 px-8 py-3 rounded-full bg-blue-600 text-white font-semibold hover:bg-blue-700 hover:scale-105 transition-all shadow-lg shadow-blue-200 dark:shadow-none"

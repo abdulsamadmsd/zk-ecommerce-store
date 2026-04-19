@@ -53,7 +53,7 @@ export default function Navbar() {
        dark:border-slate-800/50 bg-blue-600 text-white dark:bg-slate-950/70 backdrop-blur-xl"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-20">
+          <div className="flex justify-between items-center h-16">
             {/* LOGO */}
             <Link href="/" className="flex items-center">
               <Image
@@ -236,12 +236,12 @@ export default function Navbar() {
               {/* BOTTOM */}
               <div className="mt-auto pt-6 border-t border-gray-200 dark:border-slate-800 space-y-4">
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-500">Theme</span>
+                  <span className="text-sm text-white">Theme</span>
                   <ThemeToggle />
                 </div>
 
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-500">Account</span>
+                <div className="flex justify-between  items-center">
+                  <span className="text-sm text-white">Account</span>
                   <AuthButton />
                 </div>
 
