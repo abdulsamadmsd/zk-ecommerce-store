@@ -151,7 +151,7 @@ export default function Navbar() {
               {/* MOBILE MENU */}
               <button
                 onClick={() => setMenuOpen(true)}
-                className="md:hidden p-2"
+                className="md:hidden p-2 "
               >
                 <Menu />
               </button>
@@ -179,7 +179,7 @@ export default function Navbar() {
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "tween", duration: 0.3 }}
-              className="fixed top-0 right-0 h-full w-[85%] max-w-sm bg-white dark:bg-slate-950 z-50 shadow-2xl flex flex-col p-6"
+              className="fixed top-0 right-0 h-full w-[85%] max-w-sm bg-blue-600 hover:text-white dark:bg-slate-950 z-50 shadow-2xl flex flex-col p-6"
             >
               {/* TOP */}
               <div className="flex justify-between items-center mb-8">
