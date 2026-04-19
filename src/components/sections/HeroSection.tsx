@@ -94,6 +94,7 @@ export default function HeroSection() {
                   src={carouselImages[currentIndex]}
                   alt={`Product Showcase ${currentIndex + 1}`}
                   fill
+                  sizes="(max-width: 768px) 100vw, 20vw"
                   priority
                   className="object-cover"
                 />

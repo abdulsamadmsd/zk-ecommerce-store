@@ -14,6 +14,8 @@ interface ProductCardProps {
   index?: number;
 }
 
+const easeOut = [0.25, 0.1, 0.25, 1] as const; // ✅ FIX ADDED
+
 export default function ProductCard({ product, index = 0 }: ProductCardProps) {
   const href = `/product/${product.id}`;
 
@@ -24,14 +26,14 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
       viewport={{ once: true, margin: "-50px" }}
       transition={{
         duration: 0.6,
-        delay: Math.min(index * 0.1, 0.3), // Cap delay so bottom items load faster
-        ease: [0.215, 0.61, 0.355, 1], // Cubic-bezier for a "swift" entrance
+        delay: Math.min(index * 0.1, 0.3),
+        ease: easeOut, // ✅ FIXED (type-safe)
       }}
       whileHover={{ y: -6 }}
       className="group relative flex h-full flex-col overflow-hidden rounded-[2rem]
       border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900/50
       hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_20px_40px_rgba(0,0,0,0.3)] 
-      transition-shadow duration-500 ease-out"
+      transition-shadow duration-500 ease: [0.25, 0.1, 0.25, 1]"
     >
       {/* 1. CLICKABLE LAYER (Invisible Link) */}
       <Link
@@ -41,7 +43,7 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
       />
 
       <div className="relative flex h-full flex-col">
-        {/* 2. IMAGE SECTION - "The Zoom" */}
+        {/* 2. IMAGE SECTION */}
         <div className="relative aspect-[4/5] w-full overflow-hidden bg-[#f3f4f6] dark:bg-slate-800/20">
           <motion.div
             className="h-full w-full will-change-transform"
@@ -58,11 +60,10 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
             />
           </motion.div>
 
-          {/* Subtle Overlay on Hover */}
           <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-500 pointer-events-none" />
         </div>
 
-        {/* 3. CONTENT - "The Reveal" */}
+        {/* 3. CONTENT */}
         <div className="flex flex-grow flex-col p-5">
           <div className="flex justify-between items-center mb-2.5">
             <span className="px-2 py-0.5 rounded-full bg-blue-50 dark:bg-blue-500/10 text-[9px] font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400">
@@ -86,7 +87,7 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
               "Hardware designed for professional-grade reliability."}
           </p>
 
-          {/* 4. FOOTER - "The Action" */}
+          {/* 4. FOOTER */}
           <div className="mt-auto pt-4 flex items-center justify-between border-t border-slate-100 dark:border-slate-800/60">
             <div className="flex flex-col">
               <span className="text-[10px] text-slate-400 line-through font-medium">
@@ -97,7 +98,6 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
               </span>
             </div>
 
-            {/* Z-Index ensures button is clickable over the Link layer */}
             <div className="relative z-20">
               <AddToCartButton
                 product={product}

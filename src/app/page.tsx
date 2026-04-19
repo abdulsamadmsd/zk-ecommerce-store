@@ -21,6 +21,8 @@ import HeroSection from "@/components/sections/HeroSection";
 
 /* ================= ANIMATION VARIANTS ================= */
 
+const easeOut = [0.25, 0.1, 0.25, 1] as const; // ✅ FIX ADDED
+
 const containerVariants = {
   hidden: {},
   show: {
@@ -38,7 +40,7 @@ const itemVariants = {
     scale: 1,
     transition: {
       duration: 0.4,
-      ease: "easeOut",
+      ease: easeOut, // ✅ FIXED
     },
   },
 };
@@ -193,8 +195,8 @@ export default function Home() {
       <motion.section
         initial={{ opacity: 0, y: 60 }}
         whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
-        viewport={{ once: true, amount: 0.2}}
+        transition={{ duration: 0.6, ease: easeOut }} // ✅ FIXED
+        viewport={{ once: true, amount: 0.2 }}
         className="py-24 px-6 bg-gray-50 dark:bg-slate-900"
       >
         <AboutPage />
@@ -204,7 +206,7 @@ export default function Home() {
       <motion.section
         initial={{ opacity: 0, y: 60 }}
         whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
+        transition={{ duration: 0.6, ease: easeOut }} // ✅ FIXED
         viewport={{ once: true, amount: 0.2 }}
         className="py-24 px-6"
       >
