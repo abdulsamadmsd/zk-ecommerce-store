@@ -114,7 +114,7 @@ export default function Footer() {
                   size={18}
                   className="mr-3 text-blue-600 dark:text-blue-500"
                 />
-                <span>+92 (300) 1234567</span>
+                <span>+92 (302) 1234567</span>
               </li>
               <li className="flex items-center text-gray-500 dark:text-slate-400">
                 <Mail

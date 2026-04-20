@@ -58,13 +58,15 @@ export default function Navbar() {
        dark:border-slate-800/50 bg-blue-600 text-white dark:bg-blue-700 backdrop-blur-xl"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
+          <div className=" relative flex justify-between items-center h-16">
             <Link href="/" className="flex items-center">
               <Image
                 src={zklogo}
                 alt="ZK Store"
                 width={65} // Reduced size to fit h-16 better
                 height={65}
+                loading="eager"
+                priority
                 className="rounded-xl hover:scale-105 transition"
               />
             </Link>

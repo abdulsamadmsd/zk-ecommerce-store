@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useState } from "react";
+import { Mail, Phone, MapPin } from "lucide-react";
 
 export default function ContactPage() {
   const [form, setForm] = useState({ name: "", email: "", message: "" });
@@ -39,8 +40,10 @@ export default function ContactPage() {
       >
         <h1 className="text-4xl md:text-6xl font-extrabold mb-2">
           Get in
-          <span className=" ml-2 bg-gradient-to-r from-blue-500 to-purple-500 
-          text-transparent bg-clip-text">
+          <span
+            className=" ml-2 bg-gradient-to-r from-blue-500 to-purple-500 
+          text-transparent bg-clip-text"
+          >
             Touch
           </span>
         </h1>
@@ -111,19 +114,27 @@ export default function ContactPage() {
           className="p-8 rounded-3xl bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 shadow-xl"
         >
           <h2 className="text-2xl font-semibold mb-6">Contact Information</h2>
-
           <p className="mb-4 text-gray-600 dark:text-gray-400">
             Feel free to reach out for collaborations, feedback, or project
             discussions.
           </p>
 
           <div className="space-y-3 text-gray-700 dark:text-gray-300">
-            <p>📧 abdulsamadpak111@gmail.com</p>
-            <p>📞 0302-9556006</p>
-            <p>📍 Pakistan</p>
-          </div>
+            <p className="flex items-center gap-2 hover:text-blue-600 transition">
+              <Mail size={16} className="text-blue-500" />
+              abdulsamadpak111@gmail.com
+            </p>
 
-         
+            <p className="flex items-center gap-2 hover:text-blue-600 transition">
+              <Phone size={16} className="text-green-500" />
+             +92 302-9556006
+            </p>
+
+            <p className="flex items-center gap-2 hover:text-blue-600 transition">
+              <MapPin size={16} className="text-red-500" />
+              Islamabad, Pakistan
+            </p>
+          </div>
         </motion.div>
       </div>
     </section>
