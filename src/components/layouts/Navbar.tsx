@@ -4,16 +4,18 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-import { ShoppingCart, Search, X, Menu } from "lucide-react";
+import { ShoppingCart, Search, X, Menu, LogOut } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import ThemeToggle from "../ThemeToggle";
 import AuthButton from "../AuthButton";
 import zklogo from "../../../public/zklogo.png";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "@/context/AuthContext";
+import { auth } from "@/lib/firebase";
+import { signOut } from "firebase/auth";
 
 export default function Navbar() {
-  const { isAdmin, user } = useAuth(); // ← add user
+  const { isAdmin, user } = useAuth();
   const pathname = usePathname();
   const router = useRouter();
   const { cartCount, searchQuery, setSearchQuery } = useCart();
@@ -216,7 +218,7 @@ export default function Navbar() {
                 )}
               </div>
 
-              {/* ✅ Bottom: User Info + Theme Toggle */}
+              {/* Bottom: User Info + Theme Toggle */}
               <div className="mt-auto pt-6 border-t border-white/20 space-y-4">
                 {/* Theme Toggle Row */}
                 <div className="flex items-center justify-between">
@@ -228,35 +230,48 @@ export default function Navbar() {
 
                 {/* User Info */}
                 {user ? (
-                  <div className="flex items-center gap-3 bg-white/10 rounded-2xl px-4 py-3">
-                    <div className="relative w-10 h-10 flex-shrink-0">
-                      <Image
-                        src={user.photoURL || "/default-avatar.png"}
-                        alt="User"
-                        fill
-                        sizes="40px"
-                        referrerPolicy="no-referrer"
-                        className="rounded-full object-cover ring-2 ring-white"
-                      />
-                      {/* Online dot */}
-                      <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-blue-700 dark:border-slate-950 rounded-full" />
+                  <div className="space-y-2">
+                    {/* User Card */}
+                    <div className="flex items-center gap-3 bg-white/10 rounded-2xl px-4 py-3">
+                      <div className="relative w-10 h-10 flex-shrink-0">
+                        <Image
+                          src={user.photoURL || "/default-avatar.png"}
+                          alt="User"
+                          fill
+                          sizes="40px"
+                          referrerPolicy="no-referrer"
+                          className="rounded-full object-cover ring-2 ring-white"
+                        />
+                        <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-blue-700 dark:border-slate-950 rounded-full" />
+                      </div>
+                      <div className="overflow-hidden flex-1">
+                        <p className="text-sm font-bold text-white truncate">
+                          {user.displayName || "User"}
+                        </p>
+                        <p className="text-xs text-white/60 truncate">
+                          {user.email}
+                        </p>
+                      </div>
                     </div>
-                    <div className="overflow-hidden">
-                      <p className="text-sm font-bold text-white truncate">
-                        {user.displayName || "User"}
-                      </p>
-                      <p className="text-xs text-white/60 truncate">
-                        {user.email}
-                      </p>
-                    </div>
+
+                    {/* Sign Out Button */}
+                    <button
+                      onClick={() => {
+                        signOut(auth);
+                        setMenuOpen(false);
+                      }}
+                      className="w-full flex items-center justify-center gap-2 bg-red-500/20 
+                      hover:bg-red-500/40 text-red-300 font-semibold text-sm rounded-2xl 
+                      px-4 py-3 transition"
+                    >
+                      <LogOut size={16} />
+                      Sign Out
+                    </button>
                   </div>
                 ) : (
-                  // ← show login button if not logged in
-                  <div className="flex items-center gap-3 bg-white/10 rounded-2xl px-4 py-3">
-                    <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0">
-                      <Menu size={18} className="text-white" />
-                    </div>
-                    <p className="text-sm text-white/70">Not signed in</p>
+                  /* Sign In Button */
+                  <div className="bg-white/10 rounded-2xl px-4 py-3">
+                    <AuthButton />
                   </div>
                 )}
               </div>
