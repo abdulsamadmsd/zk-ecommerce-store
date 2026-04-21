@@ -46,7 +46,7 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
       />
 
       <div className="relative flex h-full flex-col">
-        {/* IMAGE SECTION */}
+       
         <div className="relative aspect-[4/5] w-full overflow-hidden bg-[#f3f4f6] dark:bg-slate-800/20">
           <motion.div
             className="h-full w-full"
@@ -66,7 +66,7 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
           <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-500 pointer-events-none" />
         </div>
 
-        {/* CONTENT */}
+     
         <div className="flex flex-grow flex-col p-5">
           <div className="flex justify-between items-center mb-2.5">
             <span className="px-2 py-0.5 rounded-full bg-blue-50 dark:bg-blue-500/10 text-[9px] font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400">
@@ -90,7 +90,7 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
               "Hardware designed for professional-grade reliability."}
           </p>
 
-          {/* FOOTER */}
+       
           <div className="mt-auto pt-4 flex items-center justify-between border-t border-slate-100 dark:border-slate-800/60">
             <div className="flex flex-col">
               <span className="text-[10px] text-slate-400 line-through font-medium">

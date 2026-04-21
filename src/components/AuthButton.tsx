@@ -10,7 +10,7 @@ import {
   onAuthStateChanged,
   User,
 } from "firebase/auth";
-import { doc, setDoc, serverTimestamp } from "firebase/firestore";
+import { doc, setDoc, serverTimestamp, getDoc } from "firebase/firestore";
 import UserMenu from "./UserMenu";
 
 export default function AuthButton() {
@@ -18,11 +18,17 @@ export default function AuthButton() {
   const [loading, setLoading] = useState(true);
   const [isOpen, setIsOpen] = useState(false); // New state for click toggle
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);
-      setLoading(false);
+      if (currentUser) {  const snap = await getDoc(doc(db, "users", currentUser.uid));
+        setIsAdmin(snap.data()?.role === "admin");
+      }else{setIsAdmin(false) }   {
+        setLoading(false);
+        
+      }
     });
     return () => unsubscribe();
   }, []);
@@ -45,6 +51,7 @@ export default function AuthButton() {
 
   const handleLogin = async () => {
     const provider = new GoogleAuthProvider();
+    const ADMIN_EMAILS = ["abdulsamadpak111@gmail.com"];
     try {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
@@ -57,7 +64,7 @@ export default function AuthButton() {
           email: user.email,
           photo: user.photoURL,
           lastLogin: serverTimestamp(),
-          role: "customer",
+          role: ADMIN_EMAILS.includes(user.email || "") ? "admin" : "customer",
         },
         { merge: true },
       );
@@ -85,8 +92,10 @@ export default function AuthButton() {
             <p className="text-[10px] text-white uppercase font-bold tracking-widest leading-none">
               Account
             </p>
-            <p className="text-lg font-semibold leading-tight
-             text-white ">
+            <p
+              className="text-lg font-semibold leading-tight
+             text-white "
+            >
               {user.displayName ? user.displayName : "User"}
             </p>
           </div>
@@ -96,6 +105,7 @@ export default function AuthButton() {
               src={user.photoURL || "/default-avatar.png"}
               alt="User"
               fill
+              sizes="40px"
               referrerPolicy="no-referrer"
               className={`rounded-full ring-2 shadow-md transition-all 
                 object-cover ${isOpen ? "ring-blue-500" : "ring-white dark:ring-slate-900"}`}
@@ -106,7 +116,6 @@ export default function AuthButton() {
             ></div>
           </div>
 
-          {/* --- HIGH LEVEL DROPDOWN (Now state-controlled) --- */}
           <UserMenu
             isOpen={isOpen}
             user={user}

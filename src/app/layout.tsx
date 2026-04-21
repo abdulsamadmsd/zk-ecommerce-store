@@ -7,7 +7,7 @@ import { CartProvider } from "@/context/CartContext";
 import { Toaster } from "react-hot-toast";
 import PageTransition from "@/components/PageTransition";
 import { ThemeProvider } from "@/components/ThemeProvider";
-
+import { AuthProvider } from "@/context/AuthContext";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -24,6 +24,7 @@ export default function RootLayout({
     // [FIX] Moved suppressHydrationWarning here to prevent the hydration error
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
+          <AuthProvider>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <CartProvider>
             <Toaster
@@ -47,6 +48,7 @@ export default function RootLayout({
             </div>
           </CartProvider>
         </ThemeProvider>
+      </AuthProvider>
       </body>
     </html>
   );

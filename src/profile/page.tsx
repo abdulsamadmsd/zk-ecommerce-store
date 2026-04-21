@@ -37,9 +37,9 @@ export default function ProfilePage() {
       </div>
 
       <div className="max-w-5xl mx-auto px-4">
-        {/* Header Section (Facebook UI Style) */}
+        
         <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-sm border border-gray-100 dark:border-slate-800 overflow-hidden transition-colors">
-          {/* Cover Photo */}
+         
           <div className="relative h-20 md:h-50 w-full bg-gray-200 dark:bg-slate-800">
             <Image
               src="/cover-pic.jpg"
@@ -51,10 +51,10 @@ export default function ProfilePage() {
             />
           </div>
 
-          {/* Profile Identity Area */}
+         
           <div className="relative px-8 pb-8">
             <div className="flex flex-col md:flex-row items-center md:items-end -mt-16 md:-mt-20 mb-6 gap-6">
-              {/* Profile Picture */}
+             
               <div className="relative h-32 w-32 md:h-40 md:w-40 rounded-full border-4 border-white dark:border-slate-900 shadow-xl overflow-hidden bg-white dark:bg-slate-800">
                 <Image
                   src="/profile-pic.jpg"
@@ -65,7 +65,7 @@ export default function ProfilePage() {
                 />
               </div>
 
-              {/* Name and Role */}
+             
               <div className="text-center md:text-left md:pb-4 flex-1">
                 <h1 className="text-3xl font-black text-gray-900 dark:text-white">
                   {user.name}
@@ -75,7 +75,7 @@ export default function ProfilePage() {
                 </p>
               </div>
 
-              {/* Action Buttons */}
+            
               <div className="flex gap-2 md:pb-4">
                 <button className="bg-blue-600 text-white px-6 py-2.5 rounded-xl font-bold text-sm hover:bg-blue-700 transition-all shadow-lg shadow-blue-100 dark:shadow-none">
                   Edit Profile
@@ -88,7 +88,7 @@ export default function ProfilePage() {
 
             <div className="h-px bg-gray-100 dark:bg-slate-800 w-full mb-6"></div>
 
-            {/* Quick Info Bar */}
+           
             <div className="flex flex-wrap justify-center md:justify-start gap-6 text-sm text-gray-500 dark:text-slate-400 font-medium">
               <div className="flex items-center">
                 <Briefcase
@@ -115,9 +115,9 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        {/* Content Grid */}
+       
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-8">
-          {/* Left Column: Intro */}
+         
           <div className="lg:col-span-1 space-y-6">
             <div className="bg-white dark:bg-slate-900 p-6 rounded-3xl shadow-sm border border-gray-100 dark:border-slate-800 transition-colors">
               <h2 className="text-lg font-black text-gray-900 dark:text-white mb-4">
@@ -155,7 +155,7 @@ export default function ProfilePage() {
             </div>
           </div>
 
-          {/* Right Column: Menu Options */}
+     
           <div className="lg:col-span-2 space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <button

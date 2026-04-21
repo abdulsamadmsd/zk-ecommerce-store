@@ -79,7 +79,7 @@ export default function HeroSection() {
 
         {/* ================= RIGHT CAROUSEL IMAGE ================= */}
         <div className="relative">
-          {/* Main Image Container */}
+      
           <div className="relative w-full h-[350px] md:h-[450px] rounded-3xl overflow-hidden shadow-2xl border-4 border-white dark:border-slate-900 bg-slate-100 dark:bg-slate-800">
             <AnimatePresence mode="wait">
               <motion.div
@@ -101,11 +101,11 @@ export default function HeroSection() {
               </motion.div>
             </AnimatePresence>
 
-            {/* Subtle Overlay to ensure consistent look */}
+            
             <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent pointer-events-none" />
           </div>
 
-          {/* 🔹 CAROUSEL INDICATORS (Dots) */}
+          
           <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 flex gap-2 z-40">
             {carouselImages.map((_, i) => (
               <button
@@ -120,7 +120,7 @@ export default function HeroSection() {
             ))}
           </div>
 
-          {/* Decorative Background Element */}
+         
           <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-blue-600/10 blur-3xl rounded-full -z-10" />
         </div>
       </div>

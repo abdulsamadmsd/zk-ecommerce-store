@@ -31,7 +31,7 @@ export default function ContactPage() {
       className="w-full min-h-screen px-6 md:px-8 py-7
        bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200"
     >
-      {/* 🔹 Hero */}
+      
       <motion.div
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
@@ -52,7 +52,7 @@ export default function ContactPage() {
         </p>
       </motion.div>
 
-      {/* 🔹 Contact Grid */}
+     
       <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-10">
         {/* 🔹 Form */}
         <motion.form
@@ -106,7 +106,7 @@ export default function ContactPage() {
           )}
         </motion.form>
 
-        {/* 🔹 Info */}
+      
         <motion.div
           initial={{ opacity: 0, x: 50 }}
           whileInView={{ opacity: 1, x: 0 }}

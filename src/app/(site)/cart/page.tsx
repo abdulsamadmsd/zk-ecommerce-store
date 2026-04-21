@@ -98,8 +98,8 @@ export default function CartPage() {
                       src={item.thumbnail || "/placeholder-product.png"}
                       alt={item.title || "Product Image"}
                       fill
-                      className="object-contain"
                       sizes="112px"
+                      className="object-contain"
                     />
                   </div>
 

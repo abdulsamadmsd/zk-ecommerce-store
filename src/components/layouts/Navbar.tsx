@@ -10,28 +10,31 @@ import ThemeToggle from "../ThemeToggle";
 import AuthButton from "../AuthButton";
 import zklogo from "../../../public/zklogo.png";
 import { motion, AnimatePresence } from "framer-motion";
+import { useAuth } from "@/context/AuthContext";
 
 export default function Navbar() {
+  const { isAdmin, user } = useAuth(); // ← add user
   const pathname = usePathname();
   const router = useRouter();
   const { cartCount, searchQuery, setSearchQuery } = useCart();
   const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
-    document.body.style.overflow = menuOpen ? "hidden" : "auto";
+    document.body.style.overflow = menuOpen ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
   }, [menuOpen]);
 
-  // ================= FIXED SCROLL LOGIC =================
   const scrollToSection = (id: string) => {
     if (pathname !== "/") {
-      // If not on home, go home first with the hash
       router.push(`/#${id}`);
       return;
     }
 
     const element = document.getElementById(id);
     if (element) {
-      const offset = 80; // Navbar height offset
+      const offset = 80;
       const bodyRect = document.body.getBoundingClientRect().top;
       const elementRect = element.getBoundingClientRect().top;
       const elementPosition = elementRect - bodyRect;
@@ -45,10 +48,13 @@ export default function Navbar() {
   };
 
   const navLinks = [
-    { name: "Home", href: "#home" },
-    { name: "Products", href: "#product" },
-    { name: "About", href: "#about" },
-    { name: "Contact", href: "#contact" },
+    { name: "Home", href: "#home", isLink: false },
+    { name: "Products", href: "#product", isLink: false },
+    { name: "About", href: "#about", isLink: false },
+    { name: "Contact", href: "#contact", isLink: false },
+    ...(isAdmin
+      ? [{ name: "Dashboard", href: "/admin/products", isLink: true }]
+      : []),
   ];
 
   return (
@@ -58,33 +64,41 @@ export default function Navbar() {
        dark:border-slate-800/50 bg-blue-600 text-white dark:bg-blue-700 backdrop-blur-xl"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className=" relative flex justify-between items-center h-16">
+          <div className="relative flex justify-between items-center h-16">
             <Link href="/" className="flex items-center">
               <Image
                 src={zklogo}
                 alt="ZK Store"
-                width={65} // Reduced size to fit h-16 better
+                width={65}
                 height={65}
-                loading="eager"
                 priority
-                className="rounded-xl hover:scale-105 transition"
+                className="rounded-xl hover:scale-105 transition w-[65px] h-auto"
               />
             </Link>
 
-            <div className="hidden md:flex items-center gap-8 text-sm font-medium text-white">
-              {navLinks.map((link) => (
-                <button
-                  key={link.name}
-                  onClick={() => {
-                    if (link.href === "/") router.push("/");
-                    else scrollToSection(link.href.replace("#", ""));
-                  }}
-                  className="relative group hover:text-white/80 transition"
-                >
-                  {link.name}
-                  <span className="absolute left-0 -bottom-1 w-0 h-[2px] bg-white group-hover:w-full transition-all" />
-                </button>
-              ))}
+            {/* Desktop Nav */}
+            <div className="hidden md:flex items-center gap-3 text-sm font-medium text-white">
+              {navLinks.map((link) =>
+                link.isLink ? (
+                  <Link
+                    key={link.name}
+                    href={link.href}
+                    className="relative group hover:text-white/80 transition"
+                  >
+                    {link.name}
+                    <span className="absolute left-0 -bottom-1 w-0 h-[2px] bg-white group-hover:w-full transition-all" />
+                  </Link>
+                ) : (
+                  <button
+                    key={link.name}
+                    onClick={() => scrollToSection(link.href.replace("#", ""))}
+                    className="relative group hover:text-white/80 transition"
+                  >
+                    {link.name}
+                    <span className="absolute left-0 -bottom-1 w-0 h-[2px] bg-white group-hover:w-full transition-all" />
+                  </button>
+                ),
+              )}
             </div>
 
             <div className="hidden lg:flex flex-1 max-w-md mx-6">
@@ -148,18 +162,25 @@ export default function Navbar() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setMenuOpen(false)}
-              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50"
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40"
             />
             <motion.div
               initial={{ x: "100%" }}
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "tween", duration: 0.3 }}
-              className="fixed top-0 right-0 h-full w-[80%] max-w-sm bg-blue-700 dark:bg-slate-950 z-50 
+              className="fixed top-0 right-0 h-full w-[80%] max-w-sm bg-blue-700 dark:bg-slate-950 z-50
              shadow-2xl flex flex-col p-6"
             >
+              {/* Header */}
               <div className="flex justify-between items-center mb-8">
-                <Image src={zklogo} alt="logo" width={60} height={60} />
+                <Image
+                  src={zklogo}
+                  alt="logo"
+                  width={60}
+                  height={60}
+                  className="w-[60px] h-auto"
+                />
                 <button
                   onClick={() => setMenuOpen(false)}
                   className="text-white"
@@ -167,22 +188,78 @@ export default function Navbar() {
                   <X />
                 </button>
               </div>
-              <div className="flex flex-col gap-6 text-xl font-semibold text-white">
-                {navLinks.map((link) => (
-                  <button
-                    key={link.name}
-                    className="text-left"
-                    onClick={() => {
-                      setMenuOpen(false);
-                      if (link.href === "/") router.push("/");
-                      else scrollToSection(link.href.replace("#", ""));
-                    }}
-                  >
-                    {link.name}
-                  </button>
-                ))}
+
+              {/* Nav Links */}
+              <div className="flex flex-col gap-6 text-xl font-semibold text-white flex-1">
+                {navLinks.map((link) =>
+                  link.isLink ? (
+                    <Link
+                      key={link.name}
+                      href={link.href}
+                      className="text-left"
+                      onClick={() => setMenuOpen(false)}
+                    >
+                      {link.name}
+                    </Link>
+                  ) : (
+                    <button
+                      key={link.name}
+                      className="text-left"
+                      onClick={() => {
+                        setMenuOpen(false);
+                        scrollToSection(link.href.replace("#", ""));
+                      }}
+                    >
+                      {link.name}
+                    </button>
+                  ),
+                )}
               </div>
-              {/* Other menu items remain same */}
+
+              {/* ✅ Bottom: User Info + Theme Toggle */}
+              <div className="mt-auto pt-6 border-t border-white/20 space-y-4">
+                {/* Theme Toggle Row */}
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium text-white/70">
+                    Theme
+                  </span>
+                  <ThemeToggle />
+                </div>
+
+                {/* User Info */}
+                {user ? (
+                  <div className="flex items-center gap-3 bg-white/10 rounded-2xl px-4 py-3">
+                    <div className="relative w-10 h-10 flex-shrink-0">
+                      <Image
+                        src={user.photoURL || "/default-avatar.png"}
+                        alt="User"
+                        fill
+                        sizes="40px"
+                        referrerPolicy="no-referrer"
+                        className="rounded-full object-cover ring-2 ring-white"
+                      />
+                      {/* Online dot */}
+                      <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-blue-700 dark:border-slate-950 rounded-full" />
+                    </div>
+                    <div className="overflow-hidden">
+                      <p className="text-sm font-bold text-white truncate">
+                        {user.displayName || "User"}
+                      </p>
+                      <p className="text-xs text-white/60 truncate">
+                        {user.email}
+                      </p>
+                    </div>
+                  </div>
+                ) : (
+                  // ← show login button if not logged in
+                  <div className="flex items-center gap-3 bg-white/10 rounded-2xl px-4 py-3">
+                    <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0">
+                      <Menu size={18} className="text-white" />
+                    </div>
+                    <p className="text-sm text-white/70">Not signed in</p>
+                  </div>
+                )}
+              </div>
             </motion.div>
           </>
         )}

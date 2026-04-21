@@ -10,7 +10,7 @@ export default function AboutPage() {
      dark:bg-gray-900 text-gray-800 dark:text-gray-200 overflow-hidden"
       id="about"
     >
-      {/* 🔹 Hero Section */}
+     
       <motion.div
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
@@ -30,7 +30,7 @@ export default function AboutPage() {
         </p>
       </motion.div>
 
-      {/* 🔹 Mission + Vision */}
+      
       <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-8 mb-20">
         {[
           {
@@ -56,7 +56,7 @@ export default function AboutPage() {
         ))}
       </div>
 
-      {/* 🔹 Features */}
+      
       <div className="max-w-6xl mx-auto mb-20">
         <motion.h2
           initial={{ opacity: 0 }}
@@ -89,7 +89,7 @@ export default function AboutPage() {
         </div>
       </div>
 
-      {/* 🔹 Tech Stack */}
+      
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         whileInView={{ opacity: 1, scale: 1 }}
@@ -103,7 +103,7 @@ export default function AboutPage() {
         </p>
       </motion.div>
 
-      {/* 🔹 Developer Section */}
+    
       <motion.div
         initial={{ opacity: 0, y: 40 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -118,7 +118,7 @@ export default function AboutPage() {
         </p>
       </motion.div>
 
-      {/* 🔹 CTA */}
+     
       <motion.div
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
