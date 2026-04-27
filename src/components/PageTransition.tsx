@@ -12,6 +12,7 @@ export default function PageTransition({
       initial={{ opacity: 0, y: 10 }} // Starts slightly lower and invisible
       animate={{ opacity: 1, y: 0 }} // Fades in and slides up to position
       transition={{ duration: 0.4, ease: "easeOut" }} // Very fast and smooth
+      className="overflow-x-clip"
     >
       {children}
     </motion.div>

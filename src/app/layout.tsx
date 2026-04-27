@@ -23,7 +23,7 @@ export default function RootLayout({
   return (
     // [FIX] Moved suppressHydrationWarning here to prevent the hydration error
     <html lang="en" suppressHydrationWarning>
-      <body className={inter.className}>
+      <body className={`${inter.className} overflow-x-clip`}>
           <AuthProvider>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <CartProvider>
@@ -38,10 +38,10 @@ export default function RootLayout({
             />
 
             {/* [UPDATE] Added transition classes to the wrapper for a smooth theme switch */}
-            <div className="flex flex-col min-h-screen bg-white dark:bg-slate-950 text-gray-900 dark:text-white transition-colors duration-500">
+            <div className="flex min-h-screen flex-col overflow-x-clip bg-white text-gray-900 transition-colors duration-500 dark:bg-slate-950 dark:text-white">
               <Navbar />
               {/* [FIX] Removed bg-gray-50 so the theme background shows through */}
-              <main className="flex-grow">
+              <main className="flex-grow overflow-x-clip">
                 <PageTransition>{children}</PageTransition>
               </main>
               <Footer />

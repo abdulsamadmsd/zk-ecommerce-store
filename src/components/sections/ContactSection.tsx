@@ -28,7 +28,7 @@ export default function ContactPage() {
   return (
     <section
       id="contact"
-      className="w-full min-h-screen px-6 md:px-8 py-7
+      className="min-h-screen px-6 md:px-8 py-7
        bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200"
     >
       
@@ -120,9 +120,9 @@ export default function ContactPage() {
           </p>
 
           <div className="space-y-3 text-gray-700 dark:text-gray-300">
-            <p className="flex items-center gap-2 hover:text-blue-600 transition">
+            <p className="flex flex-wrap items-center gap-2 hover:text-blue-600 transition">
               <Mail size={16} className="text-blue-500" />
-              abdulsamadpak111@gmail.com
+              <span className="break-all">abdulsamadpak111@gmail.com</span>
             </p>
 
             <p className="flex items-center gap-2 hover:text-blue-600 transition">

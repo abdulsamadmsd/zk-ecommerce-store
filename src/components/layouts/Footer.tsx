@@ -153,7 +153,7 @@ export default function Footer() {
         {/* Bottom Bar */}
         <div className="border-t border-gray-100 dark:border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center text-xs text-gray-400 dark:text-slate-500 font-medium">
           <p>© 2026 ZK STORE. All rights reserved.</p>
-          <div className="flex space-x-6 mt-4 md:mt-0">
+          <div className="mt-4 flex flex-wrap justify-center gap-x-6 gap-y-2 md:mt-0">
             <Link
               href="#"
               className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors"

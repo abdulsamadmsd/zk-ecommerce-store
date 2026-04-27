@@ -12,22 +12,29 @@ import {
   Link as LinkIcon,
   Loader2,
 } from "lucide-react";
-// Import firebase storage tools
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import { storage } from "@/lib/firebase";
+import {
+  collection,
+  addDoc,
+  updateDoc,
+  doc,
+  deleteDoc,
+  serverTimestamp,
+} from "firebase/firestore";
+import { storage, db } from "@/lib/firebase";
 
 type Product = {
   id: string;
   title: string;
   price: number;
   category?: string;
-  thumbnail?: string; // Standardized to 'thumbnail' to match your DB
+  thumbnail?: string;
 };
 
 export default function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const [uploading, setUploading] = useState(false); // Track upload status
+  const [uploading, setUploading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [editProduct, setEditProduct] = useState<Product | null>(null);
   const [uploadMethod, setUploadMethod] = useState<"link" | "upload">("link");
@@ -50,7 +57,7 @@ export default function ProductsPage() {
     setLoading(false);
   };
 
-  // 📁 Handle Image Upload to Firebase
+  // 📁 Handle Image Upload to Firebase Storage
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -75,32 +82,70 @@ export default function ProductsPage() {
     );
   };
 
-  const handleAdd = () => {
-    const newProduct: Product = {
-      id: Date.now().toString(),
-      title: form.title,
-      price: Number(form.price),
-      category: form.category,
-      thumbnail: form.thumbnail,
-    };
-    setProducts((prev) => [newProduct, ...prev]);
-    resetForm();
+  // ➕ Add to Firestore
+  const handleAdd = async () => {
+    if (!form.title || !form.price)
+      return alert("Title and Price are required");
+
+    try {
+      const productData = {
+        title: form.title,
+        price: Number(form.price),
+        category: form.category || "General",
+        thumbnail: form.thumbnail,
+        createdAt: serverTimestamp(),
+      };
+
+      const docRef = await addDoc(collection(db, "products"), productData);
+
+      // Update UI with the new ID from Firestore
+      const newProduct: Product = { id: docRef.id, ...productData };
+      setProducts((prev) => [newProduct, ...prev]);
+      resetForm();
+    } catch (error) {
+      console.error("Error adding product:", error);
+      alert("Failed to add product to database.");
+    }
   };
 
-  const handleEdit = () => {
+  // ✏️ Update in Firestore
+  const handleEdit = async () => {
     if (!editProduct) return;
-    setProducts((prev) =>
-      prev.map((p) =>
-        p.id === editProduct.id
-          ? { ...p, ...form, price: Number(form.price) }
-          : p,
-      ),
-    );
-    resetForm();
+
+    try {
+      const productRef = doc(db, "products", editProduct.id);
+      const updatedData = {
+        title: form.title,
+        price: Number(form.price),
+        category: form.category,
+        thumbnail: form.thumbnail,
+      };
+
+      await updateDoc(productRef, updatedData);
+
+      setProducts((prev) =>
+        prev.map((p) =>
+          p.id === editProduct.id ? { ...p, ...updatedData } : p,
+        ),
+      );
+      resetForm();
+    } catch (error) {
+      console.error("Error updating product:", error);
+      alert("Failed to update product.");
+    }
   };
 
-  const handleDelete = (id: string) => {
-    setProducts((prev) => prev.filter((p) => p.id !== id));
+  // 🗑️ Delete from Firestore
+  const handleDelete = async (id: string) => {
+    if (!confirm("Are you sure you want to delete this product?")) return;
+
+    try {
+      await deleteDoc(doc(db, "products", id));
+      setProducts((prev) => prev.filter((p) => p.id !== id));
+    } catch (error) {
+      console.error("Error deleting product:", error);
+      alert("Failed to delete product.");
+    }
   };
 
   const resetForm = () => {
@@ -123,8 +168,8 @@ export default function ProductsPage() {
 
   if (loading)
     return (
-      <div className="h-screen flex items-center justify-center dark:text-white">
-        Loading...
+      <div className="h-screen flex items-center justify-center dark:text-white font-medium">
+        <Loader2 className="animate-spin mr-2" /> Loading Inventory...
       </div>
     );
 
@@ -146,7 +191,7 @@ export default function ProductsPage() {
         {products.map((p) => (
           <div
             key={p.id}
-            className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm"
+            className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm hover:shadow-md transition-shadow"
           >
             <div className="aspect-square bg-slate-100 dark:bg-slate-800 relative">
               {p.thumbnail ? (
@@ -190,10 +235,9 @@ export default function ProductsPage() {
         ))}
       </div>
 
-      {/* MODAL WITH UPLOAD OPTION */}
       {showModal && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-slate-900 p-6 rounded-3xl w-full max-w-md shadow-2xl overflow-hidden">
+          <div className="bg-white dark:bg-slate-900 p-6 rounded-3xl w-full max-w-md shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
             <h2 className="text-2xl font-bold mb-6 dark:text-white">
               {editProduct ? "Edit" : "Add"} Product
             </h2>
@@ -201,7 +245,7 @@ export default function ProductsPage() {
             <div className="space-y-4">
               <input
                 placeholder="Product Title"
-                className="w-full p-3 rounded-xl border dark:bg-slate-800 dark:border-slate-700 dark:text-white"
+                className="w-full p-3 rounded-xl border dark:bg-slate-800 dark:border-slate-700 dark:text-white outline-none focus:ring-2 focus:ring-blue-500"
                 value={form.title}
                 onChange={(e) => setForm({ ...form, title: e.target.value })}
               />
@@ -209,13 +253,13 @@ export default function ProductsPage() {
                 <input
                   placeholder="Price"
                   type="number"
-                  className="w-1/2 p-3 rounded-xl border dark:bg-slate-800 dark:border-slate-700 dark:text-white"
+                  className="w-1/2 p-3 rounded-xl border dark:bg-slate-800 dark:border-slate-700 dark:text-white outline-none focus:ring-2 focus:ring-blue-500"
                   value={form.price}
                   onChange={(e) => setForm({ ...form, price: e.target.value })}
                 />
                 <input
                   placeholder="Category"
-                  className="w-1/2 p-3 rounded-xl border dark:bg-slate-800 dark:border-slate-700 dark:text-white"
+                  className="w-1/2 p-3 rounded-xl border dark:bg-slate-800 dark:border-slate-700 dark:text-white outline-none focus:ring-2 focus:ring-blue-500"
                   value={form.category}
                   onChange={(e) =>
                     setForm({ ...form, category: e.target.value })
@@ -223,7 +267,6 @@ export default function ProductsPage() {
                 />
               </div>
 
-              {/* IMAGE SELECTION TOGGLE */}
               <div className="space-y-3 pt-2">
                 <div className="flex bg-slate-100 dark:bg-slate-800 p-1 rounded-xl w-fit">
                   <button
@@ -245,7 +288,7 @@ export default function ProductsPage() {
                 {uploadMethod === "link" ? (
                   <input
                     placeholder="Image URL"
-                    className="w-full p-3 rounded-xl border dark:bg-slate-800 dark:border-slate-700 dark:text-white"
+                    className="w-full p-3 rounded-xl border dark:bg-slate-800 dark:border-slate-700 dark:text-white outline-none focus:ring-2 focus:ring-blue-500"
                     value={form.thumbnail}
                     onChange={(e) =>
                       setForm({ ...form, thumbnail: e.target.value })
@@ -270,7 +313,7 @@ export default function ProductsPage() {
                 )}
 
                 {form.thumbnail && (
-                  <div className="relative w-16 h-16 rounded-lg overflow-hidden border">
+                  <div className="relative w-20 h-20 rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700">
                     <img
                       src={form.thumbnail}
                       className="w-full h-full object-cover"
@@ -278,9 +321,9 @@ export default function ProductsPage() {
                     />
                     <button
                       onClick={() => setForm({ ...form, thumbnail: "" })}
-                      className="absolute top-0 right-0 bg-red-500 text-white p-0.5"
+                      className="absolute top-0 right-0 bg-red-500 text-white p-1 hover:bg-red-600"
                     >
-                      <X size={10} />
+                      <X size={12} />
                     </button>
                   </div>
                 )}
@@ -290,16 +333,16 @@ export default function ProductsPage() {
             <div className="flex gap-3 mt-8">
               <button
                 onClick={resetForm}
-                className="flex-1 py-3 font-semibold text-slate-500"
+                className="flex-1 py-3 font-semibold text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 transition-colors"
               >
                 Cancel
               </button>
               <button
                 disabled={uploading}
                 onClick={editProduct ? handleEdit : handleAdd}
-                className="flex-1 py-3 bg-blue-600 text-white rounded-xl font-bold disabled:bg-slate-400"
+                className="flex-1 py-3 bg-blue-600 text-white rounded-xl font-bold disabled:bg-slate-400 hover:bg-blue-700 transition-all shadow-lg shadow-blue-500/20"
               >
-                {editProduct ? "Update" : "Create"}
+                {uploading ? "Uploading..." : editProduct ? "Update" : "Create"}
               </button>
             </div>
           </div>
