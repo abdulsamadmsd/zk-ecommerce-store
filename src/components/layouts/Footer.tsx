@@ -2,15 +2,15 @@
 
 import Link from "next/link";
 import {
-  Globe,
-  Send,
+  Github,
+  Linkedin,
+  Facebook,
   Mail,
   MapPin,
   Phone,
   ArrowRight,
-  ShieldCheck,
 } from "lucide-react";
-
+import { FaGithub, FaLinkedin, FaFacebook } from "react-icons/fa";
 export default function Footer() {
   return (
     <footer className="bg-white dark:bg-slate-950 border-t border-gray-100 dark:border-slate-800 pt-16 pb-8 transition-colors duration-500">
@@ -27,15 +27,33 @@ export default function Footer() {
               satisfaction.
             </p>
             <div className="flex space-x-4">
-              <div className="h-10 w-10 rounded-full bg-gray-50 dark:bg-slate-900 flex items-center justify-center text-gray-400 dark:text-slate-500 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all cursor-pointer">
-                <Globe size={20} />
-              </div>
-              <div className="h-10 w-10 rounded-full bg-gray-50 dark:bg-slate-900 flex items-center justify-center text-gray-400 dark:text-slate-500 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all cursor-pointer">
-                <Send size={20} />
-              </div>
-              <div className="h-10 w-10 rounded-full bg-gray-50 dark:bg-slate-900 flex items-center justify-center text-gray-400 dark:text-slate-500 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all cursor-pointer">
-                <ShieldCheck size={20} />
-              </div>
+              <Link
+                href="https://github.com/abdulsamadmsd"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="GitHub profile"
+                className="h-10 w-10 rounded-full bg-gray-50 dark:bg-slate-900 flex items-center justify-center text-gray-400 dark:text-slate-500 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all"
+              >
+                <FaGithub />
+              </Link>
+              <Link
+                href="https://www.linkedin.com/in/abdulsamadmsd5/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="LinkedIn profile"
+                className="h-10 w-10 rounded-full bg-gray-50 dark:bg-slate-900 flex items-center justify-center text-gray-400 dark:text-slate-500 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all"
+              >
+                <FaLinkedin />
+              </Link>
+              <Link
+                href="https://web.facebook.com/abdulsamadmsd22"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Facebook profile"
+                className="h-10 w-10 rounded-full bg-gray-50 dark:bg-slate-900 flex items-center justify-center text-gray-400 dark:text-slate-500 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all"
+              >
+                <FaFacebook />
+              </Link>
             </div>
           </div>
 
@@ -114,14 +132,14 @@ export default function Footer() {
                   size={18}
                   className="mr-3 text-blue-600 dark:text-blue-500"
                 />
-                <span>+92 (302) 1234567</span>
+                <span>+92 (302) 9556006</span>
               </li>
               <li className="flex items-center text-gray-500 dark:text-slate-400">
                 <Mail
                   size={18}
                   className="mr-3 text-blue-600 dark:text-blue-500"
                 />
-                <span>support@zkstore.com</span>
+                <span>abdulsamadmsd5@gmail.com</span>
               </li>
             </ul>
           </div>
