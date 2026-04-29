@@ -8,7 +8,8 @@ export interface Product {
   stock?: number;
   thumbnail?: string;
   images?: string[];
-  createdAt?: string;
+  createdAt?: unknown;
+  updatedAt?: unknown;
 }
 
 export interface CartItem extends Product {

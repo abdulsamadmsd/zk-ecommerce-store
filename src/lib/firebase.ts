@@ -1,12 +1,11 @@
 import { initializeApp, getApps, getApp } from "firebase/app";
-import { doc, setDoc, getDoc, serverTimestamp } from "firebase/firestore";
 import {
   getAuth,
   setPersistence,
   browserLocalPersistence,
 } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
-import { getStorage } from "firebase/storage"; // <-- 1. Added this import
+import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -23,7 +22,7 @@ const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
 // Initialize Services
 export const auth = getAuth(app);
 export const db = getFirestore(app);
-export const storage = getStorage(app); // <-- 2. Added this export
+export const storage = getStorage(app);
 
 // --- THE FIX FOR MULTI-TAB & PERSISTENT LOGIN ---
 if (typeof window !== "undefined") {

@@ -1,7 +1,17 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getProducts } from "@/lib/products";
+import {
+  createProduct,
+  deleteProduct,
+  getProducts,
+  updateProduct,
+} from "@/lib/products";
+import {
+  getUploadErrorMessage,
+  uploadProductImage,
+} from "@/lib/productImages";
+import { Product } from "@/types";
 import {
   Trash2,
   Pencil,
@@ -14,21 +24,14 @@ import {
   Search,
   Filter,
 } from "lucide-react";
-import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import { storage } from "@/lib/firebase";
-
-type Product = {
-  id: string;
-  title: string;
-  price: number;
-  category?: string;
-  thumbnail?: string;
-};
 
 export default function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [uploadError, setUploadError] = useState("");
+  const [saving, setSaving] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [editProduct, setEditProduct] = useState<Product | null>(null);
   const [uploadMethod, setUploadMethod] = useState<"link" | "upload">("link");
@@ -60,52 +63,88 @@ export default function ProductsPage() {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    setUploading(true);
-    const storageRef = ref(storage, `products/${Date.now()}-${file.name}`);
-    const uploadTask = uploadBytesResumable(storageRef, file);
+    try {
+      setUploading(true);
+      setUploadProgress(0);
+      setUploadError("");
 
-    uploadTask.on(
-      "state_changed",
-      null,
-      (error) => {
-        console.error(error);
-        setUploading(false);
-        alert("Upload failed");
-      },
-      async () => {
-        const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-        setForm((prev) => ({ ...prev, thumbnail: downloadURL }));
-        setUploading(false);
-      },
-    );
+      const downloadURL = await uploadProductImage(file, setUploadProgress);
+      setForm((prev) => ({ ...prev, thumbnail: downloadURL }));
+    } catch (error) {
+      console.error("Product image upload error:", error);
+      setUploadError(getUploadErrorMessage(error));
+    } finally {
+      setUploading(false);
+      e.target.value = "";
+    }
   };
 
-  const handleAdd = () => {
-    const newProduct: Product = {
-      id: Date.now().toString(),
-      title: form.title,
-      price: Number(form.price),
-      category: form.category,
-      thumbnail: form.thumbnail,
-    };
-    setProducts((prev) => [newProduct, ...prev]);
-    resetForm();
+  const handleAdd = async () => {
+    if (!form.title.trim() || !form.price) {
+      alert("Title and price are required.");
+      return;
+    }
+
+    try {
+      setSaving(true);
+      const newProduct = await createProduct({
+        title: form.title,
+        price: Number(form.price),
+        category: form.category,
+        thumbnail: form.thumbnail,
+      });
+
+      setProducts((prev) => [newProduct, ...prev]);
+      resetForm();
+    } catch (error) {
+      console.error("Error adding product:", error);
+      alert("Failed to add product to Firebase.");
+    } finally {
+      setSaving(false);
+    }
   };
 
-  const handleEdit = () => {
+  const handleEdit = async () => {
     if (!editProduct) return;
-    setProducts((prev) =>
-      prev.map((p) =>
-        p.id === editProduct.id
-          ? { ...p, ...form, price: Number(form.price) }
-          : p,
-      ),
-    );
-    resetForm();
+
+    if (!form.title.trim() || !form.price) {
+      alert("Title and price are required.");
+      return;
+    }
+
+    try {
+      setSaving(true);
+      const updatedProduct = await updateProduct(editProduct.id, {
+        title: form.title,
+        price: Number(form.price),
+        category: form.category,
+        thumbnail: form.thumbnail,
+      });
+
+      setProducts((prev) =>
+        prev.map((p) =>
+          p.id === editProduct.id ? { ...p, ...updatedProduct } : p,
+        ),
+      );
+      resetForm();
+    } catch (error) {
+      console.error("Error updating product:", error);
+      alert("Failed to update product in Firebase.");
+    } finally {
+      setSaving(false);
+    }
   };
 
-  const handleDelete = (id: string) => {
-    setProducts((prev) => prev.filter((p) => p.id !== id));
+  const handleDelete = async (id: string) => {
+    if (!confirm("Delete this product permanently?")) return;
+
+    try {
+      await deleteProduct(id);
+      setProducts((prev) => prev.filter((p) => p.id !== id));
+    } catch (error) {
+      console.error("Error deleting product:", error);
+      alert("Failed to delete product from Firebase.");
+    }
   };
 
   const resetForm = () => {
@@ -113,6 +152,8 @@ export default function ProductsPage() {
     setEditProduct(null);
     setShowModal(false);
     setUploadMethod("link");
+    setUploadError("");
+    setUploadProgress(0);
   };
 
   const openEdit = (product: Product) => {
@@ -163,7 +204,10 @@ export default function ProductsPage() {
           </p>
         </div>
         <button
-          onClick={() => setShowModal(true)}
+          onClick={() => {
+            resetForm();
+            setShowModal(true);
+          }}
           className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-xl flex items-center gap-2 transition-all shadow-lg shadow-blue-500/20 font-semibold"
         >
           <Plus size={20} /> Add Product
@@ -328,12 +372,18 @@ export default function ProductsPage() {
                   <div className="relative border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-xl p-6 text-center hover:border-blue-500 transition-colors">
                     <input
                       type="file"
+                      accept="image/*"
                       onChange={handleFileUpload}
                       className="absolute inset-0 opacity-0 cursor-pointer"
                       disabled={uploading}
                     />
                     {uploading ? (
-                      <Loader2 className="animate-spin text-blue-600 mx-auto" />
+                      <div className="flex flex-col items-center gap-2">
+                        <Loader2 className="animate-spin text-blue-600" />
+                        <span className="text-xs font-medium text-slate-500">
+                          {uploadProgress}%
+                        </span>
+                      </div>
                     ) : (
                       <p className="text-xs text-slate-500 font-medium">
                         {form.thumbnail
@@ -342,6 +392,12 @@ export default function ProductsPage() {
                       </p>
                     )}
                   </div>
+                )}
+
+                {uploadError && (
+                  <p className="text-xs font-medium text-red-500">
+                    {uploadError}
+                  </p>
                 )}
 
                 {form.thumbnail && (
@@ -370,11 +426,11 @@ export default function ProductsPage() {
                 Cancel
               </button>
               <button
-                disabled={uploading}
+                disabled={uploading || saving}
                 onClick={editProduct ? handleEdit : handleAdd}
                 className="flex-1 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold disabled:bg-slate-400 transition-all shadow-lg shadow-blue-500/20"
               >
-                {editProduct ? "Update" : "Create"}
+                {saving ? "Saving..." : editProduct ? "Update" : "Create"}
               </button>
             </div>
           </div>
